@@ -154,6 +154,113 @@ function chartPath(cells) {
 }
 function text(el, value) { if (el && el.textContent !== value) el.textContent = value; }
 
+// ---------- warp timeline ----------
+// One row per warp over a rolling window of the same simulation: computing, waiting on VRAM, or ready (queued).
+const tl = {
+  svg: document.querySelector("[data-tl-svg]"),
+  grid: document.querySelector("[data-tl-grid]"),
+  now: document.querySelector("[data-tl-now]"),
+  source: document.querySelector("[data-tl-source]"),
+  totals: document.querySelector("[data-tl-totals]"),
+  paths: Object.fromEntries([...document.querySelectorAll("[data-tl-path]")].map((el) => [el.dataset.tlPath, el])),
+  key: "",
+  layout: "",
+};
+const TL = { x0: 78, x1: 948, laneY: 6, laneH: 12, top: 30, rows: 220, rowMax: 18 };
+function niceStep(span) {
+  const raw = span / 6;
+  const p = 10 ** Math.floor(Math.log10(raw));
+  return [1, 2, 5, 10].map((m) => m * p).find((m) => m >= raw);
+}
+function timeline() {
+  if (!run) {
+    if (tl.key === "off") return;
+    tl.key = "off";
+    for (const el of Object.values(tl.paths)) el.setAttribute("d", "");
+    tl.grid.innerHTML = "";
+    tl.now.setAttribute("y2", "0");
+    tl.svg.setAttribute("viewBox", "0 0 960 40");
+    text(tl.source, "No kernel yet");
+    text(tl.totals, "Launch the kernel, or run your own numbers, to fill the timeline.");
+    return;
+  }
+  const now = Math.floor(t);
+  const entry = entryAt(plan, now);
+  const span = Math.max(40, 2 * (entry.compute + entry.wait));
+  const from = Math.max(0, now - span);
+  const n = run.joins.length;
+  const key = now + "|" + span + "|" + n + "|" + custom + "|" + next + "|" + tl.svg.clientWidth;
+  if (key === tl.key) return;
+  tl.key = key;
+
+  const narrow = tl.svg.clientWidth > 0 && tl.svg.clientWidth < 600;
+  const rowH = Math.min(narrow ? 34 : TL.rowMax, (narrow ? 360 : TL.rows) / Math.max(n, 1));
+  const bottom = TL.top + n * rowH;
+  const x = (c) => TL.x0 + ((c - from) / span) * (TL.x1 - TL.x0);
+  const rect = (a, b, y, h) => (b > a ? "M" + x(a).toFixed(1) + " " + y.toFixed(2) + "H" + x(b).toFixed(1) + "v" + h.toFixed(2) + "H" + x(a).toFixed(1) + "Z" : "");
+  const rowY = (i) => TL.top + i * rowH;
+
+  const layout = n + "|" + from + "|" + span + "|" + rowH;
+  if (layout !== tl.layout) {
+    tl.layout = layout;
+    tl.svg.setAttribute("viewBox", "0 0 960 " + Math.ceil(bottom + 30));
+    const every = rowH >= 11 ? 1 : rowH >= 5 ? 4 : 8;
+    let g = '<text class="gl-tl-text" data-strong x="' + (TL.x0 - 8) + '" y="' + (TL.laneY + TL.laneH - 2) + '" text-anchor="end">lanes</text>';
+    for (let i = 0; i <= n; i++) g += '<line class="gl-tl-row" x1="' + TL.x0 + '" x2="' + TL.x1 + '" y1="' + rowY(i).toFixed(2) + '" y2="' + rowY(i).toFixed(2) + '"></line>';
+    for (let i = 0; i < n; i += every) g += '<text class="gl-tl-text" x="' + (TL.x0 - 8) + '" y="' + (rowY(i) + Math.min(rowH, 14) / 2 + 4).toFixed(1) + '" text-anchor="end">w' + i + "</text>";
+    const step = niceStep(span);
+    for (let c = Math.ceil(from / step) * step; c <= from + span; c += step) {
+      const cx = x(c).toFixed(1);
+      g += '<line class="gl-tl-tick" x1="' + cx + '" x2="' + cx + '" y1="' + bottom.toFixed(1) + '" y2="' + (bottom + 5).toFixed(1) + '"></line><text class="gl-tl-text" x="' + cx + '" y="' + (bottom + 20).toFixed(1) + '" text-anchor="middle">' + fmt(c) + "</text>";
+    }
+    tl.grid.innerHTML = g;
+  }
+
+  // Bursts and loads that touch the window. A load ends at most compute + wait after its burst starts.
+  const reach = Math.max(...plan.map((e) => e.compute + e.wait)) + 1;
+  const pad = Math.min(rowH * 0.14, 2);
+  const thin = Math.max(1.2, rowH * 0.18);
+  let compute = "", wait = "", lanes = "";
+  let computeCycles = 0, waitCycles = 0, residentCycles = 0;
+  for (let i = run.bursts.length - 1; i >= 0; i--) {
+    const burst = run.bursts[i];
+    if (burst.start + reach < from) break;
+    if (burst.start >= now) continue;
+    const load = run.loads[i];
+    const y = rowY(burst.warp) + pad, h = rowH - 2 * pad;
+    const a = Math.max(from, burst.start), b = Math.min(now, burst.end);
+    if (b > a) { compute += rect(a, b, y, h); lanes += rect(a, b, TL.laneY, TL.laneH); computeCycles += b - a; }
+    const la = Math.max(from, load.start), lb = Math.min(now, load.end);
+    if (lb > la) { wait += rect(la, lb, y, h); waitCycles += lb - la; }
+  }
+  let ready = "";
+  for (let i = 0; i < n; i++) {
+    const a = Math.max(from, run.joins[i]);
+    if (now <= a) continue;
+    residentCycles += now - a;
+    ready += rect(a, now, rowY(i) + rowH / 2 - thin / 2, thin);
+  }
+  const idleCycles = (now - from) - busyBetween(run, from, now);
+  tl.paths.compute.setAttribute("d", compute + lanes);
+  tl.paths.wait.setAttribute("d", wait);
+  tl.paths.ready.setAttribute("d", ready);
+  tl.paths.idle.setAttribute("d", now > from ? rect(from, now, TL.laneY + TL.laneH / 2 - 1.5, 3) : "");
+  const nx = x(now).toFixed(1);
+  tl.now.setAttribute("x1", nx); tl.now.setAttribute("x2", nx);
+  tl.now.setAttribute("y1", String(TL.laneY - 3)); tl.now.setAttribute("y2", (bottom + 2).toFixed(1));
+
+  const warps = plan[plan.length - 1].warps;
+  const what = warps + (warps === 1 ? " warp" : " warps") + " · " + entry.compute + "-cycle bursts · " + entry.wait + "-cycle VRAM wait";
+  text(tl.source, custom ? "Your numbers: " + what : "Example, step " + next + " (" + STEPS[next - 1].label + "): " + what);
+  const window = now - from;
+  const readyCycles = Math.max(0, residentCycles - computeCycles - waitCycles);
+  tl.totals.innerHTML = window
+    ? "Cycles " + fmt(from) + "–" + fmt(now) + ": lanes busy <b>" + pct((window - idleCycles) / window) + "</b> (" + fmt(window - idleCycles) + " of " + fmt(window) + ", idle " + fmt(idleCycles) + ")" +
+      " · warp-cycles computing <b>" + fmt(computeCycles) + "</b> · waiting on VRAM <b>" + fmt(waitCycles) + "</b> · ready (queued) <b>" + fmt(readyCycles) + "</b>" +
+      " · formula min(1, " + warps + "×" + entry.compute + "/" + (entry.compute + entry.wait) + ") = " + pct(busyShare(warps, entry.compute, entry.wait))
+    : "Cycle 0: " + what + ". Nothing has run yet.";
+}
+
 function draw(dt, now) {
   const on = !!run;
   const s = on ? stateAt(run, t) : null;
@@ -253,6 +360,7 @@ function draw(dt, now) {
     const fill = i === next && !enabled && run ? Math.min(1, Math.max(0, (t - stepFrom) / Math.max(1, enableAt - stepFrom))) : enabled ? 1 : 0;
     button.style.setProperty("--fill", fill.toFixed(3));
   });
+  timeline();
   if (!announced && run && ready()) { announced = true; say(describe()); }
   return moving || power > 0.001 && power < 0.999;
 }

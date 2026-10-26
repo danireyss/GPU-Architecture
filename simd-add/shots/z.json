@@ -1,0 +1,3 @@
+[["wait",500],["click",".sd-step[data-step='0']"],["until","!document.querySelector(\".sd-step[data-step='1']\").disabled",20000],["click",".sd-step[data-step='1']"],["until","!document.querySelector(\".sd-step[data-step='2']\").disabled",20000],
+["click",".sd-step[data-step='2']"],["wait",500],["shot","shots/z-loada.png",null,3,[300,180,420,300]],["until","!document.querySelector(\".sd-step[data-step='3']\").disabled",20000],
+["click",".sd-step[data-step='3']"],["until","!document.querySelector(\".sd-step[data-step='4']\").disabled",20000],["click",".sd-step[data-step='4']"],["wait",500],["shot","shots/z-add.png",null,3,[380,200,400,280]]]

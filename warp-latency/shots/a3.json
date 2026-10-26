@@ -1,0 +1,1 @@
+[["wait",600],["click",".gl-step[data-step='0']"],["wait",700],["click",".gl-step[data-step='1']"],["wait",150],["eval","(()=>{const g=document.querySelector('[data-slot=\"0\"]');return g.outerHTML.slice(0,300)})()"]]

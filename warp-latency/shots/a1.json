@@ -1,0 +1,4 @@
+[["wait",800],["shot","shots/00-idle.png",".gl-layout"],
+ ["click",".gl-step[data-step='0']"],["wait",900],["shot","shots/01-launch.png",".gl-layout"],
+ ["click",".gl-step[data-step='1']"],["wait",250],["shot","shots/02a-computing.png"],["wait",600],
+ ["click",".gl-step[data-step='2']"],["wait",1800],["shot","shots/03a-loading.png"],["wait",3500],["shot","shots/03b-loaded.png",".gl-layout"]]

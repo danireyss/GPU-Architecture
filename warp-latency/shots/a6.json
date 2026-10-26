@@ -1,0 +1,6 @@
+[["wait",600],["eval","document.querySelector('[data-predict]').textContent"],
+ ["click",".gl-run"],["wait",9000],["shot","shots/c1.png",".gl-layout"],["eval","document.querySelector('[data-readout]').textContent+' | '+document.querySelector('[data-chip=model]').textContent+' | '+document.querySelector('[data-chip=need]').textContent"],
+ ["eval","(()=>{const f=document.querySelector('[data-custom]');f.elements.warps.value='99';f.dispatchEvent(new Event('input'));return document.querySelector('[data-predict]').textContent+' | disabled='+f.elements.run.disabled})()"],
+ ["eval","(()=>{const f=document.querySelector('[data-custom]');f.elements.warps.value='64';f.elements.compute.value='3';f.elements.wait.value='600';f.dispatchEvent(new Event('input'));return document.querySelector('[data-predict]').textContent})()"],
+ ["click",".gl-run"],["wait",9000],["eval","document.querySelector('[data-readout]').textContent+' | '+document.querySelector('[data-chip=model]').textContent+' | '+document.querySelector('[data-chip=need]').textContent"],
+ ["click",".gl-step[data-step='0']"],["wait",500],["eval","document.querySelector('[data-readout]').textContent"]]

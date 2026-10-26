@@ -1,0 +1,6 @@
+[["wait",600],["click",".gl-step[data-step='0']"],["wait",700],["click",".gl-step[data-step='1']"],["wait",200],["shot","shots/s1-compute.png"],["wait",500],
+ ["click",".gl-step[data-step='2']"],["until","!document.querySelector(\".gl-step[data-step='3']\").disabled",15000],
+ ["click",".gl-step[data-step='3']"],["until","!document.querySelector(\".gl-step[data-step='4']\").disabled",15000],["wait",1500],["shot","shots/s3-two.png"],
+ ["click",".gl-step[data-step='4']"],["until","!document.querySelector(\".gl-step[data-step='5']\").disabled",15000],["wait",1500],["shot","shots/s4-eleven.png"],
+ ["click",".gl-step[data-step='5']"],["until","!document.querySelector(\".gl-step[data-step='6']\").disabled",15000],["wait",1500],["shot","shots/s5-twenty.png",".gl-layout"],
+ ["click",".gl-step[data-step='6']"],["until","!document.querySelector(\".gl-step[data-step='7']\").disabled",25000],["wait",4000],["shot","shots/s6-slow.png",".gl-layout"],["shot","shots/z6.png",null,3,[440,280,320,240]]]

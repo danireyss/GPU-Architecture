@@ -1,0 +1,2 @@
+[["wait",600],["click",".gl-step[data-step='0']"],["wait",700],["click",".gl-step[data-step='1']"],["wait",200],["shot","shots/z-compute.png",null,3,[440,280,320,240]],["wait",700],
+ ["click",".gl-step[data-step='2']"],["wait",1500],["shot","shots/z-wait.png",null,3,[440,280,320,240]],["shot","shots/z-console.png",null,3,[20,270,300,200]]]

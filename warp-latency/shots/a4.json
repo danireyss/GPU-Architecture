@@ -1,0 +1,2 @@
+[["wait",600],["click",".gl-step[data-step='0']"],["wait",600],["click",".gl-step[data-step='1']"],["wait",900],["click",".gl-step[data-step='2']"],["wait",200],
+ ["sheet","shots/sheet-load.png",250,16,null,2,[440,250,330,260],4]]

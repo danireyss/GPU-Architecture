@@ -1,0 +1,10 @@
+[["wait",600],["shot","shots/00.png",".sd-layout"],
+ ["click",".sd-step[data-step='0']"],["wait",1500],["shot","shots/01a.png"],["until","!document.querySelector(\".sd-step[data-step='1']\").disabled",20000],["shot","shots/01.png"],
+ ["click",".sd-step[data-step='1']"],["wait",1300],["shot","shots/02a.png"],["until","!document.querySelector(\".sd-step[data-step='2']\").disabled",20000],["shot","shots/02.png"],
+ ["click",".sd-step[data-step='2']"],["wait",700],["shot","shots/03a.png"],["until","!document.querySelector(\".sd-step[data-step='3']\").disabled",20000],
+ ["click",".sd-step[data-step='3']"],["until","!document.querySelector(\".sd-step[data-step='4']\").disabled",20000],
+ ["click",".sd-step[data-step='4']"],["wait",500],["shot","shots/05a.png",".sd-layout"],["until","!document.querySelector(\".sd-step[data-step='5']\").disabled",20000],
+ ["click",".sd-step[data-step='5']"],["until","!document.querySelector(\".sd-step[data-step='6']\").disabled",20000],["shot","shots/06.png"],
+ ["click",".sd-step[data-step='6']"],["wait",2500],["shot","shots/07a.png"],["until","!document.querySelector(\".sd-step[data-step='7']\").disabled",30000],["shot","shots/07.png"],
+ ["click",".sd-step[data-step='7']"],["wait",3400],["shot","shots/08a.png"],["until","!document.querySelector(\".sd-step[data-step='8']\").disabled",20000],["shot","shots/08.png",".sd-layout"],
+ ["click",".sd-step[data-step='8']"],["wait",800],["shot","shots/09.png"]]

@@ -39,7 +39,7 @@ let plan = null, run = null, t = 0, mode = "off", target = 0, next = 0, enableAt
 let speed = 0, shownBusy = 0, shownLevel = 0, shownWait = 100, power = 0, busGlow = 0;
 const chipGlow = [0, 0];
 const firstSeen = [];
-let frame = 0, last = 0, visible = false, custom = false;
+let frame = 0, last = 0, visible = false, custom = false, paused = false;
 function needText(burst, wait) {
   const need = warpsToHide(burst, wait);
   const whole = Math.ceil(need - 1e-9);
@@ -155,8 +155,12 @@ function chartPath(cells) {
 function text(el, value) { if (el && el.textContent !== value) el.textContent = value; }
 
 // ---------- warp timeline ----------
-// One row per warp over a rolling window of the same simulation: computing, waiting on VRAM, or ready (queued).
+// One row per warp, drawn from the same simulation: computing, waiting on VRAM, or ready (queued).
+// The visible width holds two round trips; older cycles scroll off to the left and stay reachable.
 const tl = {
+  section: document.querySelector(".gl-tl"),
+  scroll: document.querySelector("[data-tl-scroll]"),
+  names: document.querySelector("[data-tl-names]"),
   svg: document.querySelector("[data-tl-svg]"),
   grid: document.querySelector("[data-tl-grid]"),
   now: document.querySelector("[data-tl-now]"),
@@ -165,8 +169,10 @@ const tl = {
   paths: Object.fromEntries([...document.querySelectorAll("[data-tl-path]")].map((el) => [el.dataset.tlPath, el])),
   key: "",
   layout: "",
+  pinned: true,
 };
-const TL = { x0: 78, x1: 948, laneY: 6, laneH: 12, top: 30, rows: 220, rowMax: 18 };
+const TL = { laneY: 6, laneH: 12, top: 30, rows: 220, rowMax: 18, pad: 8, names: 52 };
+tl.scroll.addEventListener("scroll", () => { tl.pinned = tl.scroll.scrollLeft + tl.scroll.clientWidth >= tl.scroll.scrollWidth - 6; }, { passive: true });
 function niceStep(span) {
   const raw = span / 6;
   const p = 10 ** Math.floor(Math.log10(raw));
@@ -176,10 +182,13 @@ function timeline() {
   if (!run) {
     if (tl.key === "off") return;
     tl.key = "off";
+    tl.layout = "";
     for (const el of Object.values(tl.paths)) el.setAttribute("d", "");
     tl.grid.innerHTML = "";
+    tl.names.innerHTML = "";
     tl.now.setAttribute("y2", "0");
-    tl.svg.setAttribute("viewBox", "0 0 960 40");
+    for (const el of [tl.svg, tl.names]) el.setAttribute("height", "40");
+    tl.svg.setAttribute("width", String(tl.scroll.clientWidth || 600));
     text(tl.source, "No kernel yet");
     text(tl.totals, "Launch the kernel, or run your own numbers, to fill the timeline.");
     return;
@@ -187,36 +196,53 @@ function timeline() {
   const now = Math.floor(t);
   const entry = entryAt(plan, now);
   const span = Math.max(40, 2 * (entry.compute + entry.wait));
-  const from = Math.max(0, now - span);
+  const from = Math.max(0, now - span); // the measured window, at the right edge
   const n = run.joins.length;
-  const key = now + "|" + span + "|" + n + "|" + custom + "|" + next + "|" + tl.svg.clientWidth;
+  // History kept for scrolling back: 12 windows, but never more than about 3,000 bursts.
+  const first = Math.max(0, now - Math.min(12 * span, Math.max(span, 3000 * entry.compute)));
+  const view = Math.max(200, tl.scroll.clientWidth);
+  const key = now + "|" + span + "|" + n + "|" + custom + "|" + next + "|" + view;
   if (key === tl.key) return;
   tl.key = key;
 
-  const narrow = tl.svg.clientWidth > 0 && tl.svg.clientWidth < 600;
-  const rowH = Math.min(narrow ? 34 : TL.rowMax, (narrow ? 360 : TL.rows) / Math.max(n, 1));
+  const narrow = view < 500;
+  const rowH = Math.min(narrow ? 26 : TL.rowMax, (narrow ? 300 : TL.rows) / Math.max(n, 1));
   const bottom = TL.top + n * rowH;
-  const x = (c) => TL.x0 + ((c - from) / span) * (TL.x1 - TL.x0);
+  const height = Math.ceil(bottom + 30);
+  const scale = (view - 2 * TL.pad) / span;
+  const width = Math.ceil(Math.max(view, (now - first) * scale + 2 * TL.pad));
+  const x = (c) => TL.pad + (c - first) * scale;
   const rect = (a, b, y, h) => (b > a ? "M" + x(a).toFixed(1) + " " + y.toFixed(2) + "H" + x(b).toFixed(1) + "v" + h.toFixed(2) + "H" + x(a).toFixed(1) + "Z" : "");
   const rowY = (i) => TL.top + i * rowH;
 
-  const layout = n + "|" + from + "|" + span + "|" + rowH;
+  const layout = n + "|" + first + "|" + span + "|" + rowH + "|" + width;
   if (layout !== tl.layout) {
+    const rowsChanged = !tl.layout.startsWith(n + "|") || !tl.layout.includes("|" + rowH + "|");
     tl.layout = layout;
-    tl.svg.setAttribute("viewBox", "0 0 960 " + Math.ceil(bottom + 30));
-    const every = rowH >= 11 ? 1 : rowH >= 5 ? 4 : 8;
-    let g = '<text class="gl-tl-text" data-strong x="' + (TL.x0 - 8) + '" y="' + (TL.laneY + TL.laneH - 2) + '" text-anchor="end">lanes</text>';
-    for (let i = 0; i <= n; i++) g += '<line class="gl-tl-row" x1="' + TL.x0 + '" x2="' + TL.x1 + '" y1="' + rowY(i).toFixed(2) + '" y2="' + rowY(i).toFixed(2) + '"></line>';
-    for (let i = 0; i < n; i += every) g += '<text class="gl-tl-text" x="' + (TL.x0 - 8) + '" y="' + (rowY(i) + Math.min(rowH, 14) / 2 + 4).toFixed(1) + '" text-anchor="end">w' + i + "</text>";
+    tl.svg.setAttribute("width", String(width));
+    tl.svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+    tl.names.setAttribute("height", String(height));
+    tl.svg.setAttribute("height", String(height));
+    tl.names.setAttribute("viewBox", "0 0 " + TL.names + " " + height);
+    if (rowsChanged || !tl.names.firstChild) {
+      const every = rowH >= 11 ? 1 : rowH >= 5 ? 4 : 8;
+      let names = '<text class="gl-tl-text" data-strong x="' + (TL.names - 8) + '" y="' + (TL.laneY + TL.laneH - 2) + '" text-anchor="end">lanes</text>';
+      for (let i = 0; i < n; i += every) names += '<text class="gl-tl-text" x="' + (TL.names - 8) + '" y="' + (rowY(i) + Math.min(rowH, 14) / 2 + 4).toFixed(1) + '" text-anchor="end">w' + i + "</text>";
+      tl.names.innerHTML = names;
+    }
+    let g = "";
+    for (let i = 0; i <= n; i++) g += '<line class="gl-tl-row" x1="0" x2="' + width + '" y1="' + rowY(i).toFixed(2) + '" y2="' + rowY(i).toFixed(2) + '"></line>';
     const step = niceStep(span);
-    for (let c = Math.ceil(from / step) * step; c <= from + span; c += step) {
-      const cx = x(c).toFixed(1);
-      g += '<line class="gl-tl-tick" x1="' + cx + '" x2="' + cx + '" y1="' + bottom.toFixed(1) + '" y2="' + (bottom + 5).toFixed(1) + '"></line><text class="gl-tl-text" x="' + cx + '" y="' + (bottom + 20).toFixed(1) + '" text-anchor="middle">' + fmt(c) + "</text>";
+    for (let c = Math.ceil(first / step) * step; c <= now + span; c += step) {
+      const cx = x(c);
+      if (cx > width - 4) break;
+      g += '<line class="gl-tl-tick" x1="' + cx.toFixed(1) + '" x2="' + cx.toFixed(1) + '" y1="' + bottom.toFixed(1) + '" y2="' + (bottom + 5).toFixed(1) + '"></line><text class="gl-tl-text" x="' + cx.toFixed(1) + '" y="' + (bottom + 20).toFixed(1) + '" text-anchor="' + (cx < 16 ? "start" : "middle") + '">' + fmt(c) + "</text>";
     }
     tl.grid.innerHTML = g;
   }
 
-  // Bursts and loads that touch the window. A load ends at most compute + wait after its burst starts.
+  // Bursts and loads that touch the history. A load ends at most compute + wait after its burst starts.
+  // Totals count only the measured window [from, now].
   const reach = Math.max(...plan.map((e) => e.compute + e.wait)) + 1;
   const pad = Math.min(rowH * 0.14, 2);
   const thin = Math.max(1.2, rowH * 0.18);
@@ -224,30 +250,33 @@ function timeline() {
   let computeCycles = 0, waitCycles = 0, residentCycles = 0;
   for (let i = run.bursts.length - 1; i >= 0; i--) {
     const burst = run.bursts[i];
-    if (burst.start + reach < from) break;
+    if (burst.start + reach < first) break;
     if (burst.start >= now) continue;
     const load = run.loads[i];
     const y = rowY(burst.warp) + pad, h = rowH - 2 * pad;
-    const a = Math.max(from, burst.start), b = Math.min(now, burst.end);
-    if (b > a) { compute += rect(a, b, y, h); lanes += rect(a, b, TL.laneY, TL.laneH); computeCycles += b - a; }
-    const la = Math.max(from, load.start), lb = Math.min(now, load.end);
-    if (lb > la) { wait += rect(la, lb, y, h); waitCycles += lb - la; }
+    const a = Math.max(first, burst.start), b = Math.min(now, burst.end);
+    if (b > a) { compute += rect(a, b, y, h); lanes += rect(a, b, TL.laneY, TL.laneH); }
+    computeCycles += Math.max(0, Math.min(now, burst.end) - Math.max(from, burst.start));
+    const la = Math.max(first, load.start), lb = Math.min(now, load.end);
+    if (lb > la) wait += rect(la, lb, y, h);
+    waitCycles += Math.max(0, Math.min(now, load.end) - Math.max(from, load.start));
   }
   let ready = "";
   for (let i = 0; i < n; i++) {
-    const a = Math.max(from, run.joins[i]);
+    const a = Math.max(first, run.joins[i]);
     if (now <= a) continue;
-    residentCycles += now - a;
+    residentCycles += now - Math.max(from, run.joins[i]);
     ready += rect(a, now, rowY(i) + rowH / 2 - thin / 2, thin);
   }
   const idleCycles = (now - from) - busyBetween(run, from, now);
   tl.paths.compute.setAttribute("d", compute + lanes);
   tl.paths.wait.setAttribute("d", wait);
   tl.paths.ready.setAttribute("d", ready);
-  tl.paths.idle.setAttribute("d", now > from ? rect(from, now, TL.laneY + TL.laneH / 2 - 1.5, 3) : "");
+  tl.paths.idle.setAttribute("d", now > first ? rect(first, now, TL.laneY + TL.laneH / 2 - 1.5, 3) : "");
   const nx = x(now).toFixed(1);
   tl.now.setAttribute("x1", nx); tl.now.setAttribute("x2", nx);
   tl.now.setAttribute("y1", String(TL.laneY - 3)); tl.now.setAttribute("y2", (bottom + 2).toFixed(1));
+  if (tl.pinned) tl.scroll.scrollLeft = tl.scroll.scrollWidth;
 
   const warps = plan[plan.length - 1].warps;
   const what = warps + (warps === 1 ? " warp" : " warps") + " · " + entry.compute + "-cycle bursts · " + entry.wait + "-cycle VRAM wait";
@@ -255,7 +284,7 @@ function timeline() {
   const window = now - from;
   const readyCycles = Math.max(0, residentCycles - computeCycles - waitCycles);
   tl.totals.innerHTML = window
-    ? "Cycles " + fmt(from) + "–" + fmt(now) + ": lanes busy <b>" + pct((window - idleCycles) / window) + "</b> (" + fmt(window - idleCycles) + " of " + fmt(window) + ", idle " + fmt(idleCycles) + ")" +
+    ? "Last " + fmt(window) + " cycles (" + fmt(from) + "–" + fmt(now) + "): lanes busy <b>" + pct((window - idleCycles) / window) + "</b> (idle " + fmt(idleCycles) + ")" +
       " · warp-cycles computing <b>" + fmt(computeCycles) + "</b> · waiting on VRAM <b>" + fmt(waitCycles) + "</b> · ready (queued) <b>" + fmt(readyCycles) + "</b>" +
       " · formula min(1, " + warps + "×" + entry.compute + "/" + (entry.compute + entry.wait) + ") = " + pct(busyShare(warps, entry.compute, entry.wait))
     : "Cycle 0: " + what + ". Nothing has run yet.";
@@ -371,7 +400,7 @@ function tick(now) {
   const entry = plan ? entryAt(plan, t) : null;
   const goal = mode === "free" && custom && entry ? Math.min(400, Math.max(SPEED.free, (entry.compute + entry.wait) / 3)) : SPEED[mode] || 0;
   speed = still.matches ? goal : speed + (goal - speed) * (1 - Math.exp(-dt / 0.3));
-  if (run && (mode === "until" || mode === "free")) {
+  if (run && !paused && (mode === "until" || mode === "free")) {
     t += speed * dt;
     if (mode === "until" && t >= target) {
       t = target;
@@ -381,13 +410,37 @@ function tick(now) {
     if (t > run.horizon - 2000) resimulate(run.horizon + 6000);
   }
   const moving = draw(dt, now);
-  const busy = moving || (run && (mode === "until" || mode === "free"));
+  const busy = moving || (run && !paused && (mode === "until" || mode === "free"));
   frame = visible && busy ? requestAnimationFrame(tick) : 0;
 }
 function kick() { if (!frame && visible) { last = 0; frame = requestAnimationFrame(tick); } else if (!visible) draw(1, performance.now()); }
 
-buttons.forEach((button, i) => button.addEventListener("click", () => press(i)));
-new IntersectionObserver((entries) => { visible = entries[entries.length - 1].isIntersecting; if (visible) kick(); }, { rootMargin: "120px 0px" }).observe(stage);
+buttons.forEach((button, i) => button.addEventListener("click", () => { setPaused(false); press(i); }));
+const seen = new Map();
+const watcher = new IntersectionObserver((entries) => {
+  for (const entry of entries) seen.set(entry.target, entry.isIntersecting);
+  visible = [...seen.values()].some(Boolean);
+  if (visible) kick();
+}, { rootMargin: "120px 0px" });
+watcher.observe(stage);
+watcher.observe(tl.section);
+addEventListener("resize", () => kick());
+
+// ---------- pause ----------
+// Freezes simulated time, so the machine and the timeline stop on the same cycle.
+const pauseButtons = [...document.querySelectorAll("[data-pause]")];
+function setPaused(on) {
+  if (paused === on) return;
+  paused = on;
+  speed = on ? 0 : speed;
+  pauseButtons.forEach((button) => {
+    button.setAttribute("aria-pressed", String(on));
+    button.textContent = on ? "▶ Resume" : "❚❚ Pause";
+  });
+  if (on) say("Paused at cycle " + fmt(Math.floor(t)) + ".");
+  kick();
+}
+pauseButtons.forEach((button) => button.addEventListener("click", () => setPaused(!paused)));
 draw(1, performance.now());
 
 const labelToggle = document.querySelector("[data-labels]");
@@ -427,6 +480,7 @@ form.addEventListener("submit", (event) => {
   event.preventDefault();
   const v = readFields();
   if (!v) return;
+  setPaused(false);
   plan = [{ at: 0, warps: v.warps, compute: v.compute, wait: v.wait }];
   t = 0; mode = "free"; next = 0; enableAt = 0; firstSeen.length = 0; custom = true; announced = true;
   resimulate(6000);

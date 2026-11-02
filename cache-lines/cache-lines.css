@@ -1,0 +1,75 @@
+.cl-layout{display:grid;grid-template-columns:208px minmax(0,1fr);gap:22px;align-items:start}
+.cl-steps{position:sticky;top:24px;display:flex;flex-direction:column;gap:8px}
+.cl-step{position:relative;overflow:hidden;display:flex;gap:10px;align-items:baseline;width:100%;padding:11px 12px;border:0;border-radius:0;background:var(--anatomy-card);box-shadow:0 0 0 1px var(--anatomy-faint);color:var(--anatomy-muted);font:12.5px/1.35 var(--anatomy-mono);text-align:left;cursor:not-allowed;transition:box-shadow .3s var(--anatomy-ease),color .3s var(--anatomy-ease)}
+.cl-step-n{color:var(--anatomy-lo);font-variant-numeric:tabular-nums}
+.cl-step[data-state="next"]{color:var(--anatomy-text);box-shadow:0 0 0 1px var(--anatomy-mid)}
+.cl-step[data-state="next"]:not([disabled]){color:var(--anatomy-strong);box-shadow:0 0 0 1px var(--anatomy-lit);cursor:pointer}
+.cl-step[data-state="next"]:not([disabled]) .cl-step-n{color:var(--anatomy-strong)}
+.cl-step[data-state="next"]:not([disabled]):hover{background:var(--anatomy-face)}
+.cl-step[data-state="done"]{color:var(--anatomy-mid)}
+.cl-step[data-state="done"] .cl-step-n::after{content:" ✓"}
+.cl-step:focus-visible,.cl-toggle:focus-visible{outline:1px solid var(--anatomy-muted);outline-offset:3px}
+.cl-step-fill{position:absolute;left:0;bottom:0;height:2px;width:100%;transform-origin:left;transform:scaleX(var(--fill,0));background:var(--anatomy-lit)}
+.cl-toggle{margin-top:10px;padding:8px 12px;border:0;background:transparent;box-shadow:0 0 0 1px var(--anatomy-faint);color:var(--anatomy-muted);font:11.5px/1.3 var(--anatomy-mono);text-align:left;cursor:pointer}
+.cl-toggle:hover{color:var(--anatomy-strong)}
+.cl-main{min-width:0}
+.cl-main .iso-plate{overflow:hidden}
+.cl-say{margin:14px 0 0;min-height:2.9em;color:var(--anatomy-strong);font-size:15px;line-height:1.45}
+.cl-say b{font-weight:600}.cl-say .cl-h{color:var(--cl-hit);font-weight:600}.cl-say .cl-m{color:var(--cl-miss);font-weight:600}
+.cl-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.cl-chip{display:inline-flex;gap:8px;align-items:baseline;padding:5px 9px;background:var(--anatomy-card);box-shadow:0 0 0 1px var(--anatomy-faint);font:11.5px/1.3 var(--anatomy-mono)}
+.cl-chip-name{color:var(--anatomy-muted)}
+.cl-chip-value{color:var(--anatomy-strong);font-variant-numeric:tabular-nums}
+.cl-idea{margin:16px 0 0;color:var(--anatomy-strong);font-size:15px}
+.cl-idea b{font-weight:600}
+.cl-facts{margin:10px 0 0;padding-left:18px;color:var(--anatomy-text);font-size:13px}
+.cl-facts li{margin:0 0 4px}.cl-facts b{color:var(--anatomy-strong);font-weight:600}
+.cl-notes{margin:14px 0 0;color:var(--anatomy-text);font-size:13px}
+.cl-notes summary{cursor:pointer;color:var(--anatomy-muted);font:11.5px/1.4 var(--anatomy-mono);letter-spacing:.04em;text-transform:uppercase}
+.cl-notes ul{margin:10px 0 0;padding-left:18px}.cl-notes li{margin:0 0 6px}
+.cl-notes b{color:var(--anatomy-strong);font-weight:600}
+.cl-sources{margin:10px 0 0;color:var(--anatomy-muted);font-size:12px}.cl-sources a{color:inherit}
+.cl-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.cl-ledger-wrap{margin:14px 0 0;overflow-x:auto}
+.cl-ledger{border-collapse:collapse;width:100%;min-width:680px;font:11.5px/1.35 var(--anatomy-mono);color:var(--anatomy-text);font-variant-numeric:tabular-nums}
+.cl-ledger th{font-weight:400;color:var(--anatomy-muted);text-align:left;padding:5px 8px;border-bottom:1px solid var(--anatomy-faint)}
+.cl-ledger td{padding:5px 8px;border-bottom:1px solid var(--anatomy-faint)}
+.cl-ledger tr[data-on] td{color:var(--anatomy-strong);background:var(--anatomy-card)}
+.cl-ledger tr[data-on] td:first-child{box-shadow:inset 2px 0 0 var(--anatomy-lit)}
+.iso{--cl-lcd:#060606;--cl-lcd-ink:#f2f2f2;--cl-hit:#34c3a7;--cl-miss:#ff5a4f;--cl-cavity:#070707;--cl-cell:#1b1b1b;--cl-used:#ededed;--cl-ink:#8a8a8a;--cl-used-ink:#101010;--cl-cut:#3a3a3a}
+.iso[data-theme="light"]{--cl-lcd:#2a2b2d;--cl-lcd-ink:#f6f6f2;--cl-hit:#0e8f76;--cl-miss:#d93a2f;--cl-cavity:#d9d9d5;--cl-cell:#f4f4f1;--cl-used:#2a2a2d;--cl-ink:#77777a;--cl-used-ink:#f6f6f2;--cl-cut:#c9c9c6}
+.cl-lcd{fill:var(--cl-lcd)}
+.cl-lcd-text{fill:var(--cl-lcd-ink);font-family:var(--anatomy-mono);font-variant-numeric:tabular-nums}
+.cl-lcd-unit{fill:#9a9a9a;font-family:var(--anatomy-mono);letter-spacing:.05em}
+.cl-engrave{fill:var(--anatomy-mid);font-family:var(--anatomy-mono);font-weight:600;letter-spacing:.06em}
+.cl-mark{fill:var(--anatomy-mid);font-family:var(--anatomy-mono)}
+.cl-cavity{fill:var(--cl-cavity)}.cl-well{fill:var(--cl-lcd)}
+.cl-cut>.iso-top{fill:var(--cl-cut)}
+.cl-cell{fill:var(--cl-cell)}
+.cl-cell[data-u]{fill:var(--cl-used)}
+.cl-cell[data-now="hit"]{fill:var(--cl-hit)}
+.cl-cell[data-now="miss"]{fill:var(--cl-miss)}
+.cl-digit{fill:var(--cl-ink);font-family:var(--anatomy-mono);font-variant-numeric:tabular-nums}
+.cl-digit[data-u]{fill:var(--cl-used-ink)}
+.cl-line-bg{fill:var(--anatomy-faint)}
+.cl-line-end{stroke:var(--anatomy-hi);stroke-width:.7px;vector-effect:non-scaling-stroke;fill:none}
+.cl-line-name{fill:var(--anatomy-muted);font-family:var(--anatomy-mono)}
+.cl-lamp{fill:var(--cl-cell)}
+.cl-lamp[data-on="hit"]{fill:var(--cl-hit)}.cl-lamp[data-on="miss"]{fill:var(--cl-miss)}.cl-lamp[data-on="lit"]{fill:var(--cl-used)}
+.cl-bit{fill:var(--cl-cell)}.cl-bit[data-on]{fill:var(--cl-used)}
+.cl-map{stroke:var(--cl-miss);stroke-width:.7px;vector-effect:non-scaling-stroke;fill:none}
+.cl-fill{fill:var(--cl-miss)}.cl-fill[data-fill="used"]{fill:var(--cl-hit)}
+.cl-chit-t{fill:var(--cl-used-ink);font-family:var(--anatomy-mono);font-weight:700}
+.cl-chit>.iso-top{fill:var(--cl-hit)}
+.cl-label{fill:var(--anatomy-strong);font:600 8px/1 var(--anatomy-mono);paint-order:stroke;stroke:var(--anatomy-card);stroke-width:2.6px;stroke-linejoin:round}
+.cl-pin{fill:var(--anatomy-card);stroke:var(--anatomy-hi);stroke-width:.8px;vector-effect:non-scaling-stroke}
+.cl-labels{transition:opacity .3s var(--anatomy-ease)}
+.cl-stage[data-labels="off"] .cl-labels{opacity:0;pointer-events:none}
+@media (max-width:820px){
+  .cl-layout{grid-template-columns:1fr;gap:14px}
+  .cl-steps{position:static;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .cl-step{padding:9px 10px;font-size:11.5px}
+  .cl-toggle{grid-column:1 / -1;margin-top:0}
+  .cl-main .iso-plate{padding:44px 10px}
+  .cl-main .iso-svg{width:116%;margin:0 -8%}
+}

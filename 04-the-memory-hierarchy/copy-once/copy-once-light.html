@@ -1,0 +1,430 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Copy Once</title><style>
+.iso{
+  --anatomy-page:#0b0b0b;--anatomy-card:#131313;--anatomy-text:#a3a3a3;--anatomy-strong:#e6e6e6;--anatomy-muted:#6e6e6e;
+  --anatomy-paper:#131313;--anatomy-face:#1b1b1b;--anatomy-top:#1c1c1c;
+  --anatomy-shade-0:#0f0f0f;--anatomy-shade-1:#121212;--anatomy-shade-2:#151515;--anatomy-shade-3:#181818;
+  --anatomy-lit-top:#262626;--anatomy-lit-shade:#1d1d1d;
+  --anatomy-hi:#d4d4d4;--anatomy-mid:#6a6a6a;--anatomy-lo:#3e3e3e;--anatomy-faint:#2a2a2a;--anatomy-lit:#ffffff;
+  --anatomy-halo:#050505;--anatomy-halo-opacity:.9;--anatomy-dot:#e6e6e6;
+  --anatomy-red:#ff6b6b;--anatomy-green:#6be0a0;--anatomy-blue:#6b9bff;
+  --anatomy-weight:.6px;--anatomy-ease:cubic-bezier(.32,.72,0,1);
+  --anatomy-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --anatomy-lift:inset 0 1px 0 0 #ffffff0a,inset 0 0 0 1px #ffffff06,0 0 0 1px #00000026,0 1px 1px -.5px #00000014,0 3px 3px -1.5px #00000014,0 6px 6px -3px #00000014,0 12px 12px -6px #00000014;
+}
+.iso[data-theme="light"]{
+  --anatomy-page:#f2f2ef;--anatomy-card:#fbfbfa;--anatomy-text:#57575a;--anatomy-strong:#18181a;--anatomy-muted:#8c8c90;
+  --anatomy-paper:#fbfbfa;--anatomy-face:#ffffff;--anatomy-top:#ffffff;
+  --anatomy-shade-0:#dcdcd9;--anatomy-shade-1:#e5e5e2;--anatomy-shade-2:#ededea;--anatomy-shade-3:#f4f4f1;
+  --anatomy-lit-top:#ffffff;--anatomy-lit-shade:#eeeeeb;
+  --anatomy-hi:#26262a;--anatomy-mid:#8a8a8f;--anatomy-lo:#b4b4b8;--anatomy-faint:#d4d4d6;--anatomy-lit:#000000;
+  --anatomy-halo:#8a8a80;--anatomy-halo-opacity:.32;--anatomy-dot:#3a3a3e;
+  --anatomy-red:#e5484d;--anatomy-green:#30a46c;--anatomy-blue:#3e63dd;
+  --anatomy-lift:inset 0 1px 0 0 #ffffff,0 0 0 1px #0000000f,0 1px 1px -.5px #0000000a,0 3px 3px -1.5px #0000000a,0 6px 6px -3px #0000000a,0 12px 12px -6px #0000000a;
+}
+.iso-svg{display:block;width:100%;height:auto;overflow:visible}
+.iso-svg path,.iso-svg circle{vector-effect:non-scaling-stroke}
+.iso-fill{fill:var(--anatomy-paper);stroke:none}
+.iso-solid[data-lit]>.iso-fill{fill:var(--anatomy-face)}
+.iso-shade,.iso-top{stroke:none}
+.iso-shade[data-shade="0"]{fill:var(--anatomy-shade-0)}
+.iso-shade[data-shade="1"]{fill:var(--anatomy-shade-1)}
+.iso-shade[data-shade="2"]{fill:var(--anatomy-shade-2)}
+.iso-shade[data-shade="3"]{fill:var(--anatomy-shade-3)}
+.iso-top{fill:var(--anatomy-top)}
+.iso-solid[data-lit]>.iso-top{fill:var(--anatomy-lit-top)}
+.iso-solid[data-lit]>.iso-shade{fill:var(--anatomy-lit-shade)}
+.iso-solid[data-seamless]>.iso-shade,.iso-solid[data-seamless]>.iso-top{stroke-width:.4;stroke-linejoin:round}
+.iso-solid[data-seamless]>.iso-shade[data-shade="0"]{stroke:var(--anatomy-shade-0)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="1"]{stroke:var(--anatomy-shade-1)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="2"]{stroke:var(--anatomy-shade-2)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="3"]{stroke:var(--anatomy-shade-3)}
+.iso-solid[data-seamless]>.iso-top{stroke:var(--anatomy-top)}
+.iso-solid[data-seamless][data-lit]>.iso-top{stroke:var(--anatomy-lit-top)}
+.iso-solid[data-seamless][data-lit]>.iso-shade{stroke:var(--anatomy-lit-shade)}
+.iso-solid[data-lit]>.iso-edge{stroke:var(--anatomy-lit)}
+.iso-halo{fill:var(--anatomy-halo);stroke:none;filter:blur(9px);opacity:var(--anatomy-halo-opacity);transform:translateY(3px)}
+.iso-line{fill:none;stroke:var(--anatomy-lo);stroke-width:var(--anatomy-weight);stroke-linecap:round;stroke-linejoin:round}
+.iso-line[data-tone="hi"]{stroke:var(--anatomy-hi)}
+.iso-line[data-tone="mid"]{stroke:var(--anatomy-mid)}
+.iso-line[data-tone="lo"]{stroke:var(--anatomy-lo)}
+.iso-line[data-tone="faint"]{stroke:var(--anatomy-faint)}
+.iso-line[data-tone="lit"]{stroke:var(--anatomy-lit)}
+.iso-line[data-tone="red"]{stroke:var(--anatomy-red)}
+.iso-line[data-tone="green"]{stroke:var(--anatomy-green)}
+.iso-line[data-tone="blue"]{stroke:var(--anatomy-blue)}
+.iso-line[data-dotted]{stroke-dasharray:.01 3.5;stroke-width:1}
+.iso-line[data-dashed]{stroke-dasharray:3 3}
+.iso-line[data-flow]{stroke-dasharray:2 6}
+.iso-wire-end{fill:var(--anatomy-paper);stroke:var(--anatomy-lo);stroke-width:var(--anatomy-weight)}
+.iso-wire[data-tone="hi"] .iso-wire-end{stroke:var(--anatomy-hi)}
+.iso-wire[data-tone="mid"] .iso-wire-end{stroke:var(--anatomy-mid)}
+.iso-wire[data-tone="faint"] .iso-wire-end{stroke:var(--anatomy-faint)}
+.iso-wire[data-tone="lit"] .iso-wire-end{stroke:var(--anatomy-lit)}
+.iso-dots circle{fill:var(--anatomy-dot);stroke:none;opacity:.32}
+.iso-dots[data-tone="hi"] circle{opacity:.85}
+.iso-dots[data-tone="mid"] circle{opacity:.45}
+.iso-dots[data-tone="lo"] circle{opacity:.22}
+.iso-dots[data-tone="faint"] circle{opacity:.12}
+.iso-face-text{fill:var(--anatomy-mid);font-family:var(--anatomy-mono);letter-spacing:.04em}
+.iso-face-text[data-tone="hi"]{fill:var(--anatomy-hi)}
+.iso-face-text[data-tone="lo"]{fill:var(--anatomy-lo)}
+.iso-face-text[data-tone="faint"]{fill:var(--anatomy-faint)}
+.tb-body{fill:var(--anatomy-shade-2);stroke:none}
+.tb-shine{fill:var(--anatomy-top);stroke:none}
+.tb-shade{fill:var(--anatomy-shade-0);stroke:none}
+.tb-ring{fill:none;stroke:var(--anatomy-lo);stroke-width:.45;stroke-linecap:butt;stroke-linejoin:round}
+.tb-ring[data-tone="mid"]{stroke:var(--anatomy-mid)}
+.tb-ring[data-tone="faint"]{stroke:var(--anatomy-faint)}
+.tb-ring[data-tone="hi"]{stroke:var(--anatomy-hi)}
+@keyframes iso-flow{to{stroke-dashoffset:-32}}
+@keyframes iso-pulse{0%,100%{opacity:.18}12%{opacity:1}40%{opacity:.18}}
+.iso-line[data-flow]{animation:iso-flow 1600ms linear infinite}
+.iso-dots circle[data-pulse]{animation:iso-pulse 1600ms steps(1,end) infinite;animation-delay:var(--pulse-at,0ms)}
+.iso-figure{margin:32px 0 36px}
+.iso-plate{position:relative;padding:52px 24px;border-radius:0;background:var(--anatomy-card);box-shadow:0 0 0 1px var(--anatomy-mid);--anatomy-paper:var(--anatomy-card)}
+.iso-plate-corners{position:absolute;inset:18px 20px;pointer-events:none}
+.iso-plate-corner{position:absolute;color:var(--anatomy-muted);font-family:var(--anatomy-mono);font-size:10.5px;line-height:1;letter-spacing:.04em;white-space:nowrap}
+.iso-plate-corner[data-corner="fig"]{top:0;left:0;color:var(--anatomy-text)}
+.iso-plate-corner[data-corner="title"]{top:0;right:0;text-transform:uppercase;letter-spacing:.1em}
+.iso-plate-corner[data-corner="hint"]{bottom:0;left:0;text-transform:uppercase;letter-spacing:.1em}
+.iso-plate-corner[data-corner="readout"]{right:0;bottom:0;color:var(--anatomy-text);font-variant-numeric:tabular-nums}
+.iso-plate .iso-svg{margin:0 auto}
+.iso-legend{display:grid;gap:8px;margin-top:12px;color:var(--anatomy-muted);font-size:13px;line-height:1.55}
+.iso-keys{display:flex;flex-wrap:wrap;gap:6px 18px}
+.iso-key{display:inline-flex;align-items:center;gap:7px}
+.iso-swatch{width:16px;height:10px;flex:none;overflow:visible}
+.iso-swatch path{fill:none;stroke:var(--anatomy-hi);stroke-width:1;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+.iso-swatch[data-mark="raised"] path,.iso-swatch[data-mark="flat"] path{stroke:var(--anatomy-mid)}
+.iso-swatch[data-mark="lit"] path{stroke:var(--anatomy-lit)}
+.iso-swatch[data-mark="dim"] path{stroke:var(--anatomy-lo)}
+.iso-swatch[data-mark="dotted"] path{stroke-dasharray:.01 3;stroke-width:1.4}
+.iso-swatch[data-mark="dashed"] path{stroke-dasharray:3 2.5}
+.iso-swatch[data-mark="red"] path{stroke:var(--anatomy-red)}
+.iso-swatch[data-mark="green"] path{stroke:var(--anatomy-green)}
+.iso-swatch[data-mark="blue"] path{stroke:var(--anatomy-blue)}
+.iso-swatch-crease{stroke:var(--anatomy-lo)!important}
+@media (max-width:560px){.iso-plate{padding:48px 12px 70px}.iso-plate-corner[data-corner="hint"]{bottom:18px}}
+@media (prefers-reduced-motion:reduce){.iso-line[data-flow],.iso-dots circle[data-pulse]{animation:none}}
+
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body[data-theme="light"]{color-scheme:light}
+body{margin:0;background:var(--anatomy-page);color:var(--anatomy-text);font:14px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.iso-page{width:min(1240px,100% - 32px);margin:64px auto 96px}
+</style></head><body class="iso" data-theme="light"><main class="iso-page"><style>.co-layout{display:grid;grid-template-columns:208px minmax(0,1fr);gap:22px;align-items:start}
+.co-steps{position:sticky;top:24px;display:flex;flex-direction:column;gap:8px}
+.co-step{position:relative;overflow:hidden;display:flex;gap:10px;align-items:baseline;width:100%;padding:11px 12px;border:0;border-radius:0;background:var(--anatomy-card);box-shadow:0 0 0 1px var(--anatomy-faint);color:var(--anatomy-muted);font:12.5px/1.35 var(--anatomy-mono);text-align:left;cursor:not-allowed;transition:box-shadow .3s var(--anatomy-ease),color .3s var(--anatomy-ease)}
+.co-step-n{color:var(--anatomy-lo);font-variant-numeric:tabular-nums}
+.co-step[data-state="next"]{color:var(--anatomy-text);box-shadow:0 0 0 1px var(--anatomy-mid)}
+.co-step[data-state="next"]:not([disabled]){color:var(--anatomy-strong);box-shadow:0 0 0 1px var(--anatomy-lit);cursor:pointer}
+.co-step[data-state="next"]:not([disabled]) .co-step-n{color:var(--anatomy-strong)}
+.co-step[data-state="next"]:not([disabled]):hover{background:var(--anatomy-face)}
+.co-step[data-state="done"]{color:var(--anatomy-mid)}
+.co-step[data-state="done"] .co-step-n::after{content:" ✓"}
+.co-step:focus-visible,.co-toggle:focus-visible{outline:1px solid var(--anatomy-muted);outline-offset:3px}
+.co-step-fill{position:absolute;left:0;bottom:0;height:2px;width:100%;transform-origin:left;transform:scaleX(var(--fill,0));background:var(--anatomy-lit)}
+.co-toggle{margin-top:10px;padding:8px 12px;border:0;background:transparent;box-shadow:0 0 0 1px var(--anatomy-faint);color:var(--anatomy-muted);font:11.5px/1.3 var(--anatomy-mono);text-align:left;cursor:pointer}
+.co-toggle:hover{color:var(--anatomy-strong)}
+.co-main{min-width:0}
+.co-main .iso-plate{overflow:hidden}
+.co-say{margin:14px 0 0;min-height:2.9em;color:var(--anatomy-strong);font-size:15px;line-height:1.45}
+.co-say b{font-weight:600}
+.co-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.co-chip{display:inline-flex;gap:8px;align-items:baseline;padding:5px 9px;background:var(--anatomy-card);box-shadow:0 0 0 1px var(--anatomy-faint);font:11.5px/1.3 var(--anatomy-mono)}
+.co-chip-name{color:var(--anatomy-muted)}
+.co-chip-value{color:var(--anatomy-strong);font-variant-numeric:tabular-nums}
+.co-idea{margin:16px 0 0;color:var(--anatomy-strong);font-size:15px}
+.co-idea b{font-weight:600}
+.co-facts{margin:10px 0 0;padding-left:18px;color:var(--anatomy-text);font-size:13px}
+.co-facts li{margin:0 0 4px}.co-facts b{color:var(--anatomy-strong);font-weight:600}
+.co-notes{margin:14px 0 0;color:var(--anatomy-text);font-size:13px}
+.co-notes summary{cursor:pointer;color:var(--anatomy-muted);font:11.5px/1.4 var(--anatomy-mono);letter-spacing:.04em;text-transform:uppercase}
+.co-notes ul{margin:10px 0 0;padding-left:18px}.co-notes li{margin:0 0 6px}
+.co-notes b{color:var(--anatomy-strong);font-weight:600}
+.co-sources{margin:10px 0 0;color:var(--anatomy-muted);font-size:12px}.co-sources a{color:inherit}
+.co-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.co-ledger-wrap{margin:14px 0 0;overflow-x:auto}
+.co-ledger{border-collapse:collapse;width:100%;min-width:680px;font:11.5px/1.35 var(--anatomy-mono);color:var(--anatomy-text);font-variant-numeric:tabular-nums}
+.co-ledger th{font-weight:400;color:var(--anatomy-muted);text-align:left;padding:5px 8px;border-bottom:1px solid var(--anatomy-faint)}
+.co-ledger td{padding:5px 8px;border-bottom:1px solid var(--anatomy-faint)}
+.co-ledger tr[data-on] td{color:var(--anatomy-strong);background:var(--anatomy-card)}
+.co-ledger tr[data-on] td:first-child{box-shadow:inset 2px 0 0 var(--anatomy-lit)}
+
+
+
+.iso{--co-go:#34c3a7;--co-copy:#ff5a4f;--co-panel:#161616;--co-well:#090909;--co-dash:#f2f2f2}
+.iso[data-theme="light"]{--co-go:#0e8f76;--co-copy:#d93a2f;--co-panel:#f6f6f2;--co-well:#e9e9e5;--co-dash:#2a2a2d}
+.co-panel{fill:var(--co-panel);stroke:var(--anatomy-faint)}
+.co-box{fill:none;stroke:var(--anatomy-faint)}.co-box2{fill:var(--co-well);stroke:var(--anatomy-lo)}
+.co-t{fill:var(--anatomy-text);font:12.5px var(--anatomy-mono)}.co-b{font-weight:600;fill:var(--anatomy-strong)}
+.co-s{fill:var(--anatomy-text);font:10.5px var(--anatomy-mono)}.co-mid{fill:var(--anatomy-muted)}
+.co-h{fill:var(--anatomy-muted);font:10.5px var(--anatomy-mono);letter-spacing:.07em}
+.co-big{fill:var(--anatomy-strong);font:600 18px var(--anatomy-mono);font-variant-numeric:tabular-nums}
+.co-sm{fill:var(--anatomy-faint)}.co-l2{fill:var(--co-panel);stroke:var(--anatomy-lo)}.co-chip{fill:var(--anatomy-faint);stroke:var(--anatomy-lo)}
+.co-hl{stroke:var(--co-copy);stroke-width:3;fill:none}.co-hlbox{fill:var(--co-copy)}
+.co-zoom{fill:none;stroke:var(--anatomy-lo);stroke-dasharray:3 3}
+.co-rule{stroke:var(--anatomy-faint);fill:none}.co-axis{stroke:var(--anatomy-mid);fill:none;stroke-width:1.1}
+.co-bar-p{fill:var(--co-copy)}.co-bar-v{fill:var(--anatomy-mid)}
+.co-tank{fill:var(--co-panel);stroke:var(--anatomy-lo)}.co-level{fill:var(--co-copy)}
+.co-pipe{fill:var(--co-panel);stroke:var(--anatomy-mid)}
+.co-flow-p,.co-flow-v{fill:none;stroke:var(--co-dash);stroke-dasharray:2 4;opacity:0}
+.co-flow-p{stroke-dasharray:3 5}.co-flow-v{stroke-width:1.5}
+.co-flow-p[data-on],.co-flow-v[data-on]{opacity:1}
+.co-hop{fill:none;stroke:var(--anatomy-lo);stroke-width:3;stroke-dasharray:4 4}.co-hop[data-on]{stroke:var(--co-copy)}.co-hop[data-off]{opacity:.35}
+.co-chipbox{fill:var(--co-well);stroke:var(--anatomy-lo);transition:fill .2s var(--anatomy-ease)}
+.co-chipbox[data-on]{fill:color-mix(in srgb,var(--co-go) 28%,var(--co-well))}
+.co-bar[data-row="copy"]{fill:var(--co-copy)}.co-bar[data-row="compute"]{fill:var(--co-go)}
+.co-ghost[data-row="copy"]{fill:color-mix(in srgb,var(--co-copy) 60%,var(--co-panel))}.co-ghost[data-row="compute"]{fill:color-mix(in srgb,var(--co-go) 60%,var(--co-panel))}
+.co-clock{stroke:var(--anatomy-strong);stroke-width:1.2;fill:none}
+.co-swipe{display:none}
+.co-say .co-g{color:var(--co-go);font-weight:600}.co-say .co-r{color:var(--co-copy);font-weight:600}
+@media (max-width:820px){.co-swipe{display:block;margin:8px 0 26px;color:var(--anatomy-muted);font:11px var(--anatomy-mono)}.co-layout{grid-template-columns:1fr;gap:14px}.co-steps{position:static;display:grid;grid-template-columns:1fr 1fr;gap:6px}.co-step{padding:9px 10px;font-size:11.5px}.co-main .iso-plate{padding:44px 10px}.co-stage-box{overflow-x:auto}.co-stage-box svg{min-width:760px}}
+
+</style><div class="co-layout"><nav class="co-steps" aria-label="Steps"><button class="co-step" type="button" data-step="0"><span class="co-step-n">01</span><span>Copy 8 GB over</span><span class="co-step-fill" aria-hidden="true"></span></button><button class="co-step" type="button" data-step="1" disabled><span class="co-step-n">02</span><span>Copy from ordinary RAM</span><span class="co-step-fill" aria-hidden="true"></span></button><button class="co-step" type="button" data-step="2" disabled><span class="co-step-n">03</span><span>Run one training step</span><span class="co-step-fill" aria-hidden="true"></span></button><button class="co-step" type="button" data-step="3" disabled><span class="co-step-n">04</span><span>Overlap the copies</span><span class="co-step-fill" aria-hidden="true"></span></button><button class="co-step" type="button" data-step="4" disabled><span class="co-step-n">05</span><span>Round-trip every kernel</span><span class="co-step-fill" aria-hidden="true"></span></button><button class="co-step" type="button" data-step="5" disabled><span class="co-step-n">06</span><span>Keep it on the GPU</span><span class="co-step-fill" aria-hidden="true"></span></button><button class="co-step" type="button" data-step="6" disabled><span class="co-step-n">07</span><span>New job</span><span class="co-step-fill" aria-hidden="true"></span></button></nav><div class="co-main"><figure class="iso-figure"><div class="iso-plate"><div class="iso-plate-corners" aria-hidden="true"><span class="iso-plate-corner" data-corner="fig">Fig 8</span><span class="iso-plate-corner" data-corner="title">Copy once</span><span class="iso-plate-corner" data-corner="hint">Press the lit step</span><span class="iso-plate-corner" data-corner="readout" data-readout>nothing copied yet</span></div><div class="iso-stage co-stage-box"><svg class="iso-svg" viewBox="0 0 1000 640" role="img" aria-label="A flat board. Top left, a map of a GPU with its PCIe link highlighted. Beside it a path from ordinary RAM through a pinned staging buffer, a narrow PCIe pipe, VRAM and a pipe 20 times wider, to the GPU chip. Below, a timeline in seconds shows copying and computing bars to scale."><rect class="co-panel" x="20" y="20" width="252" height="208" /><text class="co-h" x="32" y="40" >THE WHOLE GPU</text><rect class="co-box" x="30" y="50" width="232" height="144" /><rect class="co-box2" x="96" y="76" width="100" height="92" /><rect class="co-sm" x="103" y="83" width="14" height="24" /><rect class="co-sm" x="103" y="137" width="14" height="24" /><rect class="co-sm" x="121" y="83" width="14" height="24" /><rect class="co-sm" x="121" y="137" width="14" height="24" /><rect class="co-sm" x="139" y="83" width="14" height="24" /><rect class="co-sm" x="139" y="137" width="14" height="24" /><rect class="co-sm" x="157" y="83" width="14" height="24" /><rect class="co-sm" x="157" y="137" width="14" height="24" /><rect class="co-sm" x="175" y="83" width="14" height="24" /><rect class="co-sm" x="175" y="137" width="14" height="24" /><rect class="co-l2" x="103" y="112" width="86" height="20" /><text class="co-s" x="146" y="126" text-anchor="middle">L2</text><rect class="co-chip" x="100" y="56" width="18" height="12" /><rect class="co-chip" x="40" y="74" width="12" height="16" /><rect class="co-chip" x="240" y="74" width="12" height="16" /><rect class="co-chip" x="124" y="56" width="18" height="12" /><rect class="co-chip" x="40" y="96" width="12" height="16" /><rect class="co-chip" x="240" y="96" width="12" height="16" /><rect class="co-chip" x="148" y="56" width="18" height="12" /><rect class="co-chip" x="40" y="118" width="12" height="16" /><rect class="co-chip" x="240" y="118" width="12" height="16" /><rect class="co-chip" x="172" y="56" width="18" height="12" /><rect class="co-chip" x="40" y="140" width="12" height="16" /><rect class="co-chip" x="240" y="140" width="12" height="16" /><text class="co-s co-mid" x="36" y="186" >VRAM chips</text><path class="co-hl" d="M146 168V194"/><rect class="co-hlbox" x="102" y="194" width="88" height="8" /><text class="co-s co-b" x="146" y="218" text-anchor="middle">PCIe link to the host</text><path class="co-zoom" d="M190 194L488 100M190 202L488 208"/><rect class="co-panel" x="20" y="238" width="252" height="170" /><text class="co-h" x="32" y="258" >WHAT THE 8 GB COPY COSTS</text><text class="co-t" x="146" y="290" text-anchor="middle">20 trillion a second</text><text class="co-t" x="146" y="310" text-anchor="middle" data-costs></text><path class="co-rule" d="M56 322H236"/><text class="co-big" x="146" y="350" text-anchor="middle" data-lost></text><text class="co-s co-mid" x="146" y="370" text-anchor="middle">operations not done</text><text class="co-s co-mid" x="146" y="390" text-anchor="middle" data-about></text><rect class="co-panel" x="20" y="418" width="252" height="202" /><text class="co-h" x="32" y="438" >REAL LINKS, TO SCALE</text><text class="co-s" x="32" y="464" >PCIe 3</text><rect class="co-bar-p" x="32" y="469" width="5.312" height="8" /><text class="co-s co-mid" x="43.312" y="477" >about 16 GB/s</text><text class="co-s" x="32" y="502" >PCIe 4</text><rect class="co-bar-p" x="32" y="507" width="10.624" height="8" /><text class="co-s co-mid" x="48.624" y="515" >about 32 GB/s</text><text class="co-s" x="32" y="540" >PCIe 5</text><rect class="co-bar-p" x="32" y="545" width="21.248" height="8" /><text class="co-s co-mid" x="59.248000000000005" y="553" >about 64 GB/s</text><text class="co-s" x="32" y="578" >course VRAM</text><rect class="co-bar-v" x="32" y="583" width="166" height="8" /><text class="co-s co-mid" x="204" y="591" >500 GB/s</text><text class="co-s co-mid" x="32" y="610" >full width, one way, before overheads</text><rect class="co-panel" x="286" y="20" width="700" height="270" /><text class="co-h" x="298" y="40" >THE ZOOM: RAM → PINNED BUFFER → PCIe → VRAM → GPU CHIP</text><rect class="co-box2" x="298" y="96" width="72" height="108" /><text class="co-s co-b" x="334" y="112" text-anchor="middle">ordinary</text><text class="co-s co-mid" x="334" y="126" text-anchor="middle">RAM</text><rect class="co-tank" x="308" y="136" width="52" height="40" /><rect class="co-level" x="308" y="176" width="52" height="0" data-level="ram"/><text class="co-t co-b" x="334" y="194" text-anchor="middle" data-gb="ram"></text><rect class="co-box2" x="386" y="96" width="102" height="108" /><text class="co-s co-b" x="437" y="112" text-anchor="middle">pinned</text><text class="co-s co-mid" x="437" y="126" text-anchor="middle">staging buffer</text><rect class="co-tank" x="396" y="136" width="82" height="40" /><rect class="co-level" x="396" y="176" width="82" height="0" data-level="pin"/><text class="co-t co-b" x="437" y="194" text-anchor="middle" data-gb="pin"></text><rect class="co-box2" x="664" y="96" width="96" height="108" /><text class="co-s co-b" x="712" y="112" text-anchor="middle">VRAM</text><text class="co-s co-mid" x="712" y="126" text-anchor="middle">on the card</text><rect class="co-tank" x="674" y="136" width="76" height="40" /><rect class="co-level" x="674" y="176" width="76" height="0" data-level="vram"/><text class="co-t co-b" x="712" y="194" text-anchor="middle" data-gb="vram"></text><path class="co-hop" data-hop d="M370 150H386"/><text class="co-s co-mid" x="298" y="226" data-hoptext></text><rect class="co-pipe" x="488" y="148.25" width="176" height="3.5" data-pipe/><path class="co-flow-p" data-flow="pcie" d="M488 150H664"/><rect class="co-pipe" x="760" y="115" width="116" height="70" /><path class="co-flow-v" data-flow="vram" d="M760 116.75H876M760 120.25H876M760 123.75H876M760 127.25H876M760 130.75H876M760 134.25H876M760 137.75H876M760 141.25H876M760 144.75H876M760 148.25H876M760 151.75H876M760 155.25H876M760 158.75H876M760 162.25H876M760 165.75H876M760 169.25H876M760 172.75H876M760 176.25H876M760 179.75H876M760 183.25H876"/><text class="co-big" x="576" y="76" text-anchor="middle" data-rate="pcie"></text><text class="co-s co-mid" x="576" y="94" text-anchor="middle">PCIe link</text><text class="co-t co-b" x="576" y="186" text-anchor="middle" data-move="pcie"></text><text class="co-big" x="818" y="76" text-anchor="middle">500 GB/s</text><text class="co-s co-mid" x="818" y="94" text-anchor="middle">VRAM link</text><text class="co-s co-b" x="818" y="204" text-anchor="middle" data-move="vram"></text><rect class="co-chipbox" x="876" y="96" width="96" height="108" data-chipbox/><text class="co-s co-b" x="924" y="112" text-anchor="middle">GPU chip</text><text class="co-t co-b" x="924" y="156" text-anchor="middle" data-chipstate></text><text class="co-big" x="682" y="260" text-anchor="middle" data-narrower></text><text class="co-s co-mid" x="682" y="278" text-anchor="middle">both pipes are drawn to one scale</text><rect class="co-panel" x="286" y="300" width="700" height="320" /><text class="co-h" x="298" y="320" >TIMELINE · SECONDS, TO SCALE</text><path class="co-axis" d="M400 336V466"/><text class="co-s" x="400" y="480" text-anchor="middle">0.0</text><path class="co-rule" d="M428.6 458V462"/><path class="co-rule" d="M457.2 458V462"/><path class="co-rule" d="M485.8 458V462"/><path class="co-rule" d="M514.4 458V462"/><path class="co-axis" d="M543 336V466"/><text class="co-s" x="543" y="480" text-anchor="middle">0.5</text><path class="co-rule" d="M571.6 458V462"/><path class="co-rule" d="M600.2 458V462"/><path class="co-rule" d="M628.8 458V462"/><path class="co-rule" d="M657.4000000000001 458V462"/><path class="co-axis" d="M686 336V466"/><text class="co-s" x="686" y="480" text-anchor="middle">1.0</text><path class="co-rule" d="M714.6 458V462"/><path class="co-rule" d="M743.2 458V462"/><path class="co-rule" d="M771.8 458V462"/><path class="co-rule" d="M800.4 458V462"/><path class="co-axis" d="M829 336V466"/><text class="co-s" x="829" y="480" text-anchor="middle">1.5</text><path class="co-rule" d="M857.6 458V462"/><path class="co-rule" d="M886.2 458V462"/><path class="co-rule" d="M914.8000000000001 458V462"/><path class="co-rule" d="M943.4 458V462"/><path class="co-axis" d="M972 336V466"/><text class="co-s" x="972" y="480" text-anchor="middle">2.0</text><path class="co-axis" d="M400 458H972"/><text class="co-t" x="388" y="363" text-anchor="end">copying</text><text class="co-t" x="388" y="403" text-anchor="end">computing</text><text class="co-s co-mid" x="388" y="444" text-anchor="end" data-ghostname></text><rect class="co-bar" x="0" y="0" width="0" height="0" data-b="0" style="display:none"/><rect class="co-bar" x="0" y="0" width="0" height="0" data-b="1" style="display:none"/><rect class="co-bar" x="0" y="0" width="0" height="0" data-b="2" style="display:none"/><rect class="co-bar" x="0" y="0" width="0" height="0" data-b="3" style="display:none"/><rect class="co-bar" x="0" y="0" width="0" height="0" data-b="4" style="display:none"/><rect class="co-bar" x="0" y="0" width="0" height="0" data-b="5" style="display:none"/><rect class="co-bar" x="0" y="0" width="0" height="0" data-b="6" style="display:none"/><rect class="co-bar" x="0" y="0" width="0" height="0" data-b="7" style="display:none"/><rect class="co-bar" x="0" y="0" width="0" height="0" data-b="8" style="display:none"/><rect class="co-bar" x="0" y="0" width="0" height="0" data-b="9" style="display:none"/><rect class="co-bar" x="0" y="0" width="0" height="0" data-b="10" style="display:none"/><rect class="co-bar" x="0" y="0" width="0" height="0" data-b="11" style="display:none"/><rect class="co-ghost" x="0" y="432" width="0" height="16" data-g="0" style="display:none"/><rect class="co-ghost" x="0" y="432" width="0" height="16" data-g="1" style="display:none"/><rect class="co-ghost" x="0" y="432" width="0" height="16" data-g="2" style="display:none"/><rect class="co-ghost" x="0" y="432" width="0" height="16" data-g="3" style="display:none"/><rect class="co-ghost" x="0" y="432" width="0" height="16" data-g="4" style="display:none"/><rect class="co-ghost" x="0" y="432" width="0" height="16" data-g="5" style="display:none"/><rect class="co-ghost" x="0" y="432" width="0" height="16" data-g="6" style="display:none"/><rect class="co-ghost" x="0" y="432" width="0" height="16" data-g="7" style="display:none"/><rect class="co-ghost" x="0" y="432" width="0" height="16" data-g="8" style="display:none"/><rect class="co-ghost" x="0" y="432" width="0" height="16" data-g="9" style="display:none"/><rect class="co-ghost" x="0" y="432" width="0" height="16" data-g="10" style="display:none"/><rect class="co-ghost" x="0" y="432" width="0" height="16" data-g="11" style="display:none"/><text class="co-s co-mid" x="0" y="403" data-wait></text><path class="co-clock" data-clock d="M400 334V462" style="display:none"/><text class="co-s co-mid" x="298" y="524" >total</text><text class="co-big" x="298" y="548" data-total></text><text class="co-s co-mid" x="470" y="524" data-l1></text><text class="co-big" x="470" y="548" data-v1></text><text class="co-s co-mid" x="690" y="524" data-l2></text><text class="co-big" x="690" y="548" data-v2></text><text class="co-t" x="298" y="590" data-sum></text></svg><span class="co-sr" role="status" aria-live="polite" data-status></span></div><p class="co-swipe">Swipe the board sideways to see all of it.</p></div><figcaption class="iso-legend"><span class="iso-keys"><span class="iso-key"><svg class="iso-swatch" data-mark="red" viewBox="0 0 16 10" aria-hidden="true"><path d="M1.5 5h13"/></svg>Copying over the host link</span><span class="iso-key"><svg class="iso-swatch" data-mark="green" viewBox="0 0 16 10" aria-hidden="true"><path d="M1.5 5h13"/></svg>Computing on the GPU</span><span class="iso-key"><svg class="iso-swatch" data-mark="dim" viewBox="0 0 16 10" aria-hidden="true"><path d="M1.5 5h13"/></svg>Each row of dashes in a pipe carries 25 GB/s</span></span></figcaption></figure><p class="co-say" data-say aria-live="polite"></p><div class="co-chips" aria-label="Live numbers"><span class="co-chip"><span class="co-chip-name">PCIe</span><span class="co-chip-value" data-chip="link">-</span></span><span class="co-chip"><span class="co-chip-name">narrower than VRAM</span><span class="co-chip-value" data-chip="narrow">-</span></span><span class="co-chip"><span class="co-chip-name">one copy</span><span class="co-chip-value" data-chip="copy">-</span></span><span class="co-chip"><span class="co-chip-name">computing</span><span class="co-chip-value" data-chip="compute">-</span></span><span class="co-chip"><span class="co-chip-name">total</span><span class="co-chip-value" data-chip="total">-</span></span><span class="co-chip"><span class="co-chip-name">time copying</span><span class="co-chip-value" data-chip="share">-</span></span><span class="co-chip"><span class="co-chip-name">batches a second</span><span class="co-chip-value" data-chip="rate">-</span></span><span class="co-chip"><span class="co-chip-name">saved</span><span class="co-chip-value" data-chip="save">-</span></span></div><p class="co-idea"><b>The big idea:</b> the host link is 20 times narrower, so copy once and keep the data on the GPU.</p><ul class="co-facts">
+<li><b>The board uses 25 GB/s and the check question 20 GB/s.</b> The 8 GB copy runs at 25. The training and kernel examples run at 20, so the pipe is drawn thinner there and is 25 times narrower than VRAM, not 20.</li>
+<li><b>Full-width PCIe 3, 4 and 5 carry about 16, 32 and 64 GB/s,</b> and real copies get somewhat less.</li>
+<li><b>The extra hop from ordinary RAM is shown without a cost,</b> because it varies by system. The timeline does not change between steps 1 and 2.</li>
+<li><b>The three-kernel example assumes each kernel's output is also 2 GB.</b></li>
+</ul><details class="co-notes"><summary>Where the numbers come from</summary><ul>
+<li><b>The model:</b> one pure function, written and tested before drawing. Copy time = bytes ÷ link speed, and a step takes copy + compute in sequence, or the longer of the two when they overlap. Every bar, level, readout and chip comes from it.</li>
+<li><b>PCIe figures:</b> a full-width link is 16 lanes. PCIe 3 runs 8 gigatransfers a second per lane with 128b/130b coding, so 8 × 16 × 128/130 ÷ 8 = 15.75 GB/s one way. PCIe 4 and 5 double that each time, to 31.5 and 63. Packet overheads take more off, which is why real copies get less.</li>
+<li><b>The course's example chip:</b> 500 GB/s of VRAM and 20 trillion operations a second are example figures, not one real product. "About 6 trillion" is 6.4 trillion rounded, and it assumes the lanes could have been fully busy for all 0.32 s.</li>
+<li><b>Overlapping:</b> the 0.4 s a step holds once the run is under way. The first batch still takes 0.5 s, because nothing has been copied ahead of it. On the timeline, three batches take 1.3 s against 1.5 s. The 25% is the steady rate, 2.5 against 2 batches a second. It needs an asynchronous copy, and a real one is rarely this cleanly timed.</li>
+<li><b>Keeping it on the GPU</b> saves 0.4 s of 1.8 s because 4 of the 6 copies disappear. With one kernel there is nothing to save, and "New job" shows that case.</li>
+<li><b>Pinned memory:</b> pageable memory can be moved by the operating system, so the driver copies it into a pinned staging buffer before the GPU's copy engine reads it. Allocating pinned memory skips that hop. This is from my knowledge of NVIDIA's CUDA guidance and PyTorch's pin_memory option, and I did not recheck it for this page.</li>
+<li><b>New job</b> sizes and computing times are round figures chosen for the figure, on the real PCIe speeds above. They assume each kernel's output is the same size as its input.</li>
+<li><b>Drawing choices:</b> the VRAM pipe's dashes run while the chip computes, to show it working from VRAM, but the model does not use that rate for computing. The clock runs 4 to 8 times slower than real time, and the rate is what matters, not the speed of the dashes on screen. The pipe's dashes do scale with the link's rate.</li>
+<li><b>Left out:</b> latency and setup for each copy, the time to allocate memory, and a machine with NVLink or shared memory, where the host link can be much wider.</li>
+</ul></details></div></div></main><script type="module">// Copy once. copy time = bytes / link speed; a step is copy + compute in sequence,
+// or the longer of the two when they overlap. Pure functions, no DOM.
+const LINK = { board: 25, check: 20, vram: 500 }; // GB/s
+const OPS = 20e12; // operations a second, the course's example chip
+const copyTime = (gb, rate) => gb / rate;
+const stepTime = (copy, compute, overlap = false) => (overlap ? Math.max(copy, compute) : copy + compute);
+const narrower = (rate) => LINK.vram / rate;
+const lostOps = (seconds) => OPS * seconds;
+
+const bar = (row, t0, t1, extra = {}) => ({ row, t0, t1, ...extra });
+// Batches run one after another: copy, compute, copy, compute.
+function inSequence(n, copy, compute, gb, rate) {
+  const bars = [];
+  for (let i = 0; i < n; i++) { const t = i * stepTime(copy, compute); bars.push(bar("copy", t, t + copy, { gb, rate, dir: "in" }), bar("compute", t + copy, t + copy + compute)); }
+  return bars;
+}
+// Each batch's copy runs during the batch before it, finishing as that batch's computing ends.
+function overlapped(n, copy, compute, gb, rate) {
+  const step = stepTime(copy, compute, true), bars = [];
+  for (let i = 0; i < n; i++) { const start = copy + i * step; bars.push(bar("compute", start, start + compute), bar("copy", start - copy, start, { gb, rate, dir: "in" })); }
+  return bars;
+}
+// Every kernel copies in, computes and copies out.
+function roundTrip(kernels, gb, rate, compute) {
+  const copy = copyTime(gb, rate), bars = [];
+  for (let i = 0; i < kernels; i++) { const t = i * (2 * copy + compute); bars.push(bar("copy", t, t + copy, { gb, rate, dir: "in" }), bar("compute", t + copy, t + copy + compute), bar("copy", t + copy + compute, t + 2 * copy + compute, { gb, rate, dir: "out" })); }
+  return bars;
+}
+// In once, the kernels chained in VRAM, back once.
+function chained(kernels, gb, rate, compute) {
+  const copy = copyTime(gb, rate), work = kernels * compute;
+  return [bar("copy", 0, copy, { gb, rate, dir: "in" }), bar("compute", copy, copy + work), bar("copy", copy + work, 2 * copy + work, { gb, rate, dir: "out" })];
+}
+const totalOf = (bars) => Math.max(...bars.map((b) => b.t1));
+const copyingOf = (bars) => bars.filter((b) => b.row === "copy").reduce((sum, b) => sum + b.t1 - b.t0, 0);
+
+const BATCH = { gb: 2, rate: LINK.check, compute: 0.4 };
+const JOBS = [ // "New job": round figures chosen for the figure, on real PCIe speeds
+  { name: "5 kernels on 1 GB, PCIe 4", gb: 1, rate: 32, compute: 0.2, kernels: 5 },
+  { name: "2 kernels on 4 GB, PCIe 3", gb: 4, rate: 16, compute: 0.3, kernels: 2 },
+  { name: "1 kernel on 8 GB, PCIe 5", gb: 8, rate: 64, compute: 0.5, kernels: 1 },
+  { name: "8 kernels on 500 MB, PCIe 4", gb: 0.5, rate: 32, compute: 0.1, kernels: 8 },
+];
+const STEPS = ["Copy 8 GB over", "Copy from ordinary RAM", "Run one training step", "Overlap the copies", "Round-trip every kernel", "Keep it on the GPU", "New job"];
+
+// What each step plays: the bars, and a comparison row.
+function plan(index, job = JOBS[0]) {
+  const { gb, rate, compute } = BATCH;
+  const copy = copyTime(gb, rate);
+  const base = (bars, ghost, ghostName, extra = {}) => ({ bars, ghost, ghostName, total: totalOf(bars), copying: copyingOf(bars), ...extra });
+  const eight = [bar("copy", 0, copyTime(8, LINK.board), { gb: 8, rate: LINK.board, dir: "in" })];
+  const eightVram = [bar("copy", 0, copyTime(8, LINK.vram), { gb: 8, rate: LINK.vram, dir: "in" })];
+  if (index === 0) return base(eight, eightVram, "VRAM's speed", { slow: 8, gb: 8, rate: LINK.board, source: "pinned" });
+  if (index === 1) return base(eight, eightVram, "VRAM's speed", { slow: 8, gb: 8, rate: LINK.board, source: "ram", hop: true });
+  if (index === 2) return base(inSequence(3, copy, compute, gb, rate), null, "", { slow: 4, gb, rate, source: "pinned", step: stepTime(copy, compute), share: copy / stepTime(copy, compute) });
+  if (index === 3) { const step = stepTime(copy, compute, true); return base(overlapped(3, copy, compute, gb, rate), inSequence(3, copy, compute, gb, rate), "in sequence", { slow: 4, gb, rate, source: "pinned", step, share: 0, gain: stepTime(copy, compute) / step - 1 }); }
+  if (index === 4) return base(roundTrip(3, gb, rate, compute), null, "", { slow: 4, gb, rate, source: "pinned", kernels: 3 });
+  if (index === 5) return base(chained(3, gb, rate, compute), roundTrip(3, gb, rate, compute), "round trips", { slow: 4, gb, rate, source: "pinned", kernels: 3 });
+  return base(chained(job.kernels, job.gb, job.rate, job.compute), roundTrip(job.kernels, job.gb, job.rate, job.compute), "round trips", { slow: 4, gb: job.gb, rate: job.rate, source: "pinned", kernels: job.kernels, job });
+}
+
+const GEO = {"TL":{"x0":400,"x1":972,"max":2,"copy":342,"compute":382,"h":32,"ghost":432,"gh":16,"axis":458},"CY":150,"PX_PER_GBS":0.14,"boxes":{"ram":{"x":298,"y":96,"w":72,"h":108},"pin":{"x":386,"y":96,"w":102,"h":108},"vram":{"x":664,"y":96,"w":96,"h":108}}};
+const box = document.querySelector(".co-stage-box");
+const svg = box.querySelector("svg");
+const q = (s) => svg.querySelector(s);
+const still = matchMedia("(prefers-reduced-motion: reduce)");
+const readout = document.querySelector("[data-readout]"), sayEl = document.querySelector("[data-say]"), status = document.querySelector("[data-status]");
+const buttons = [...document.querySelectorAll(".co-step")];
+const chips = Object.fromEntries([...document.querySelectorAll("[data-chip]")].map((el) => [el.dataset.chip, el]));
+const barEls = [...svg.querySelectorAll("[data-b]")], ghostEls = [...svg.querySelectorAll("[data-g]")];
+const flowP = q('[data-flow="pcie"]'), flowV = q('[data-flow="vram"]'), pipe = q("[data-pipe]"), hop = q("[data-hop]"), clockEl = q("[data-clock]"), chipBox = q("[data-chipbox]");
+const levels = Object.fromEntries(["ram", "pin", "vram"].map((n) => [n, { bar: q(`[data-level="${n}"]`), text: q(`[data-gb="${n}"]`) }]));
+const TL = GEO.TL;
+const X = (sec) => TL.x0 + (Math.min(sec, TL.max) / TL.max) * (TL.x1 - TL.x0);
+const text = (el, v) => { if (el && el.textContent !== v) el.textContent = v; };
+const flag = (el, n, on) => { if (on) { if (!el.hasAttribute(n)) el.setAttribute(n, ""); } else if (el.hasAttribute(n)) el.removeAttribute(n); };
+const show = (el, on) => { const d = on ? "" : "none"; if (el.style.display !== d) el.style.display = d; };
+// seconds and gigabytes, trimmed: 0.32, 0.016, 1.4, 1.063
+const sec = (v) => Number(v.toFixed(3)).toString() + " s";
+const gbs = (v) => Number(v.toFixed(2)).toString() + " GB";
+const pct = (x) => Number((x * 100).toFixed(1)).toString() + "%";
+const trillion = (ops) => (ops / 1e12).toFixed(1) + " trillion";
+
+const s = { next: 0, index: -1, plan: null, t: 0, hopLeft: 0, playing: false, job: null, draw: 0, phase: 0, phaseV: 0, say: "Press <b>Copy 8 GB over</b>. The data starts in pinned memory on the host side of the narrow pipe.", result: null };
+let frame = 0, last = 0, visible = false;
+const say = (html) => { s.say = html; status.textContent = html.replace(/<[^>]+>/g, ""); };
+
+// Where the data is at time t, from the copy that started last.
+function where() {
+  const p = s.plan;
+  if (!p) return { host: 0, vram: 0 };
+  const copies = p.bars.filter((b) => b.row === "copy" && b.t0 <= s.t).sort((a, b) => a.t0 - b.t0);
+  const b = copies[copies.length - 1];
+  if (!b) return { host: p.gb, vram: 0 };
+  const f = Math.min(1, (s.t - b.t0) / (b.t1 - b.t0));
+  const on = b.dir === "in" ? f * p.gb : (1 - f) * p.gb;
+  return { host: p.gb - on, vram: on };
+}
+function setLevel(name, gb, full) {
+  const b = GEO.boxes[name], l = levels[name], h = full ? (Math.min(gb, full) / full) * 40 : 0;
+  l.bar.setAttribute("height", h.toFixed(1)); l.bar.setAttribute("y", (b.y + 80 - h).toFixed(1));
+  text(l.text, gb > 0.0005 ? gbs(gb) : "empty");
+}
+function draw() {
+  const p = s.plan, t = s.t, rate = p ? p.rate : LINK.board;
+  const copying = p && p.bars.find((b) => b.row === "copy" && t >= b.t0 && t < b.t1 && s.hopLeft <= 0);
+  const computing = p && p.bars.find((b) => b.row === "compute" && t >= b.t0 && t < b.t1 && s.hopLeft <= 0);
+  const race = p && s.index < 2 && s.hopLeft <= 0 && t > 0 && t < p.ghost[0].t1;
+  // pipes, width and dashes from the model
+  const h = rate * GEO.PX_PER_GBS;
+  pipe.setAttribute("height", h.toFixed(2)); pipe.setAttribute("y", (GEO.CY - h / 2).toFixed(2));
+  flowP.style.strokeWidth = (h * 0.7).toFixed(2);
+  flag(flowP, "data-on", !!copying); flag(flowV, "data-on", !!(computing || race));
+  flag(chipBox, "data-on", !!computing);
+  text(q('[data-rate="pcie"]'), rate + " GB/s");
+  text(q("[data-narrower]"), Number(narrower(rate).toFixed(2)) + " times narrower");
+  text(q('[data-move="pcie"]'), p ? `${gbs(p.gb)} in ${sec(copyTime(p.gb, rate))}` : "");
+  text(q('[data-move="vram"]'), p ? `${gbs(p.gb)} in ${sec(copyTime(p.gb, LINK.vram))}` : "");
+  text(q("[data-chipstate]"), !p ? "" : computing ? "computing" : t >= p.total && s.hopLeft <= 0 ? "done" : "waiting");
+
+  // the data's location
+  const w = where(), full = p ? p.gb : 0;
+  const inRam = !!(p && p.source === "ram" && s.hopLeft > 0);
+  const hopF = inRam ? s.hopLeft / 1.3 : 0;
+  setLevel("ram", inRam ? p.gb * hopF : 0, full);
+  setLevel("pin", p ? (inRam ? p.gb * (1 - hopF) : w.host) : 0, full);
+  setLevel("vram", w.vram, full);
+  flag(hop, "data-on", inRam); flag(hop, "data-off", !!p && p.source !== "ram");
+  text(q("[data-hoptext]"), !p ? "" : p.source === "ram" ? "extra hop: cost varies, not counted" : s.index === 0 ? "pinned memory skips this hop" : "");
+
+  // timeline bars grow with the clock
+  barEls.forEach((el, i) => {
+    const b = p && p.bars[i];
+    const on = b && t > b.t0;
+    show(el, !!on);
+    if (!on) return;
+    el.setAttribute("data-row", b.row);
+    el.setAttribute("x", X(b.t0).toFixed(1)); el.setAttribute("y", b.row === "copy" ? TL.copy : TL.compute);
+    el.setAttribute("width", (X(Math.min(t, b.t1)) - X(b.t0)).toFixed(1)); el.setAttribute("height", TL.h);
+  });
+  ghostEls.forEach((el, i) => {
+    const b = p && p.ghost && p.ghost[i];
+    const end = b ? (s.index < 2 ? Math.min(t, b.t1) : b.t1) : 0;
+    show(el, !!b && end > b.t0);
+    if (!b) return;
+    el.setAttribute("data-row", b.row); el.setAttribute("x", X(b.t0).toFixed(1)); el.setAttribute("width", Math.max(0, X(end) - X(b.t0)).toFixed(1));
+  });
+  text(q("[data-ghostname]"), p ? p.ghostName : "");
+  show(clockEl, !!p);
+  if (p) clockEl.setAttribute("transform", `translate(${(X(t) - TL.x0).toFixed(1)} 0)`);
+  const wait = q("[data-wait]");
+  const noCompute = p && !p.bars.some((b) => b.row === "compute" && b.t0 < t + 1e-9);
+  text(wait, noCompute && t > 0 ? "empty: the GPU has nothing to do" : ""); wait.setAttribute("x", (X(0) + 8).toFixed(1));
+
+  // the cost panel counts up during the 8 GB copy, from the model
+  const seconds = p && s.index < 2 ? Math.min(t, p.total) : copyTime(8, LINK.board);
+  const counting = s.next > 0 || p;
+  text(q("[data-costs]"), counting ? `× ${sec(seconds)} of copying` : "× the copy");
+  text(q("[data-lost]"), counting ? trillion(lostOps(seconds)) : "-");
+  text(q("[data-about]"), counting && seconds >= copyTime(8, LINK.board) - 1e-9 ? "about 6 trillion" : "");
+
+  const R = s.result;
+  text(q("[data-total]"), p ? sec(Math.min(t, p.total)) : "-");
+  text(q("[data-l1]"), R ? R.l1 : ""); text(q("[data-v1]"), R ? R.v1 : "");
+  text(q("[data-l2]"), R ? R.l2 : ""); text(q("[data-v2]"), R ? R.v2 : "");
+  text(q("[data-sum]"), R ? R.sum : "");
+  text(chips.link, rate + " GB/s");
+  text(chips.narrow, Number(narrower(rate).toFixed(2)) + " times");
+  text(chips.copy, p ? sec(copyTime(p.gb, rate)) : "-");
+  text(chips.compute, R && R.compute !== undefined ? sec(R.compute) : "-");
+  text(chips.total, p && !s.playing ? sec(p.total) : "-");
+  text(chips.share, R && R.share !== undefined ? pct(R.share) : "-");
+  text(chips.rate, R && R.rate !== undefined ? Number(R.rate.toFixed(2)).toString() : "-");
+  text(chips.save, R && R.save !== undefined ? R.save : "-");
+  text(readout, !p ? "nothing copied yet" : `${sec(Math.min(t, p.total))} · ${computing ? "computing" : copying ? "copying at " + rate + " GB/s" : s.hopLeft > 0 ? "extra hop" : "done"}`);
+  if (sayEl.innerHTML !== s.say) sayEl.innerHTML = s.say;
+  buttons.forEach((button, i) => {
+    const st = i === s.next ? "next" : i < s.next ? "done" : "later";
+    if (button.dataset.state !== st) button.dataset.state = st;
+    const on = i === s.next && !s.playing;
+    if (button.disabled === on) button.disabled = !on;
+    button.style.setProperty("--fill", i === s.next && s.playing && p ? String(Math.min(1, s.t / p.total)) : "0");
+  });
+}
+
+// ---------- what each step concludes, all from the plan ----------
+function conclude(i) {
+  const p = s.plan, copy = copyTime(p.gb, p.rate);
+  if (i === 0) { s.result = { l1: "VRAM would take", v1: sec(copyTime(8, LINK.vram)), l2: "the link is", v2: narrower(LINK.board) + " times narrower", sum: `8 ÷ 25 = ${sec(copy)}, and 8 ÷ 500 = ${sec(copyTime(8, LINK.vram))}` }; return `8 ÷ 25 = <b>${sec(copy)}</b>. VRAM would move it in <b>${sec(copyTime(8, LINK.vram))}</b>. In those ${sec(copy)} the GPU could have done about 6 trillion operations.`; }
+  if (i === 1) { s.result = { l1: "extra hop", v1: "not counted", l2: "copy still", v2: sec(copy), sum: "The hop's cost varies by system, so the timeline does not change." }; return `Ordinary RAM goes through the <b>pinned staging buffer</b> first, an extra hop that pinned memory skips. Its cost varies by system, so it is shown but not counted.`; }
+  if (i === 2) { const step = p.step; s.result = { compute: BATCH.compute, share: p.share, rate: 1 / step, l1: "a step", v1: sec(step), l2: "batches a second", v2: String(1 / step), sum: `${sec(copy)} copy + ${sec(BATCH.compute)} compute = ${sec(step)}, ${pct(p.share)} of it copying` }; return `A 2 GB batch at 20 GB/s takes <b>${sec(copy)}</b>, then ${sec(BATCH.compute)} of computing: <b>${sec(step)} a step</b>, ${pct(p.share)} of it copying, <b>${1 / step} batches a second</b>.`; }
+  if (i === 3) { s.result = { compute: BATCH.compute, rate: 1 / p.step, save: pct(p.gain) + " more", l1: "a step, once running", v1: sec(p.step), l2: "batches a second", v2: String(1 / p.step), sum: `the longer of ${sec(copy)} and ${sec(BATCH.compute)} is ${sec(p.step)}` }; return `The next copy runs during this step's computing, so a step takes <span class="co-g">${sec(p.step)}</span>: <b>${1 / p.step} batches a second</b>, ${pct(p.gain)} more from the same hardware.`; }
+  if (i === 4) { s.result = { compute: 3 * BATCH.compute, share: p.copying / p.total, l1: "copies", v1: "6", l2: "total", v2: sec(p.total), sum: `3 × (${copy} + ${BATCH.compute} + ${copy}) = ${sec(p.total)}` }; return `Three kernels on the same 2 GB, each copying in and out: 3 × (0.1 + 0.4 + 0.1) = <span class="co-r">${sec(p.total)}</span>, with a third of it spent copying.`; }
+  const g = totalOf(p.ghost), saved = g - p.total, work = p.kernels * (p.job ? p.job.compute : BATCH.compute);
+  s.result = { compute: work, share: p.copying / p.total, save: saved > 1e-9 ? sec(saved) + ", " + pct(saved / g) : "nothing", l1: "copies", v1: "2", l2: "round trips took", v2: sec(g), sum: `${Number(copy.toFixed(3))} + ${Number(work.toFixed(3))} + ${Number(copy.toFixed(3))} = ${sec(p.total)}` };
+  if (i === 5) return `Copied in once, chained in VRAM and copied back once: 0.1 + 1.2 + 0.1 = <span class="co-g">${sec(p.total)}</span>, against ${sec(g)}. The computing never changed. Only the copies went.`;
+  return saved > 1e-9 ? `<b>${p.job.name}</b>: ${sec(g)} with round trips, <span class="co-g">${sec(p.total)}</span> kept on the GPU.` : `<b>${p.job.name}</b>: ${sec(p.total)} either way. With one kernel there is nothing to save.`;
+}
+function start(i) {
+  s.index = i;
+  s.plan = plan(i, s.job || undefined); s.t = 0; s.result = null;
+  s.hopLeft = s.plan.hop ? 1.3 : 0;
+  s.playing = true;
+  say(i === 0 ? "The whole 8 GB has to squeeze through the narrow pipe while the GPU waits." : i === 1 ? "The data starts in ordinary RAM, so it has to reach the pinned buffer first." : i === 2 ? "Each batch copies, then computes. Three batches in a row." : i === 3 ? "The copy for the next batch starts while this one computes." : i === 4 ? "Every kernel copies its data in and back out." : i === 5 ? "The data stays in VRAM between kernels." : "A new job, kept on the GPU, with round trips below for comparison.");
+  if (still.matches) { s.t = s.plan.total; s.hopLeft = 0; finish(i); } else kick();
+}
+function finish(i) { s.t = s.plan.total; s.playing = false; say(conclude(i)); s.next = i >= 6 ? 6 : i + 1; draw(); }
+function press(i) {
+  if (i !== s.next || s.playing) return;
+  if (i === 6) s.job = JOBS[s.draw++ % JOBS.length];
+  start(i);
+}
+function tick(now) {
+  const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
+  last = now;
+  if (s.playing) {
+    if (s.hopLeft > 0) s.hopLeft = Math.max(0, s.hopLeft - dt);
+    else { s.t += dt / s.plan.slow; if (s.t >= s.plan.total) finish(s.index); }
+  }
+  // dashes run at the link's own rate: one row of dashes at 25 GB/s moves 240 units a second
+  const rate = s.plan ? s.plan.rate : LINK.board;
+  const going = s.plan && s.plan.bars.find((b) => b.row === "copy" && s.t >= b.t0 && s.t < b.t1);
+  s.phase += ((going && going.dir === "out" ? 1 : -1) * 240 * (rate / LINK.board)) * dt;
+  s.phaseV -= 240 * dt;
+  flowP.style.strokeDashoffset = s.phase.toFixed(1); flowV.style.strokeDashoffset = s.phaseV.toFixed(1);
+  draw();
+  frame = visible && s.playing ? requestAnimationFrame(tick) : 0;
+}
+function kick() { if (!frame && visible) { last = 0; frame = requestAnimationFrame(tick); } else if (!frame) draw(); }
+buttons.forEach((b, i) => b.addEventListener("click", () => press(i)));
+new IntersectionObserver((e) => { visible = e[e.length - 1].isIntersecting; if (visible) kick(); }, { rootMargin: "120px 0px" }).observe(box);
+draw();
+</script></body></html>

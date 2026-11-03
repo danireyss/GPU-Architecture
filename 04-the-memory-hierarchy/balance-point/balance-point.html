@@ -1,0 +1,498 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Balance Point</title><style>
+.iso{
+  --anatomy-page:#0b0b0b;--anatomy-card:#131313;--anatomy-text:#a3a3a3;--anatomy-strong:#e6e6e6;--anatomy-muted:#6e6e6e;
+  --anatomy-paper:#131313;--anatomy-face:#1b1b1b;--anatomy-top:#1c1c1c;
+  --anatomy-shade-0:#0f0f0f;--anatomy-shade-1:#121212;--anatomy-shade-2:#151515;--anatomy-shade-3:#181818;
+  --anatomy-lit-top:#262626;--anatomy-lit-shade:#1d1d1d;
+  --anatomy-hi:#d4d4d4;--anatomy-mid:#6a6a6a;--anatomy-lo:#3e3e3e;--anatomy-faint:#2a2a2a;--anatomy-lit:#ffffff;
+  --anatomy-halo:#050505;--anatomy-halo-opacity:.9;--anatomy-dot:#e6e6e6;
+  --anatomy-red:#ff6b6b;--anatomy-green:#6be0a0;--anatomy-blue:#6b9bff;
+  --anatomy-weight:.6px;--anatomy-ease:cubic-bezier(.32,.72,0,1);
+  --anatomy-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --anatomy-lift:inset 0 1px 0 0 #ffffff0a,inset 0 0 0 1px #ffffff06,0 0 0 1px #00000026,0 1px 1px -.5px #00000014,0 3px 3px -1.5px #00000014,0 6px 6px -3px #00000014,0 12px 12px -6px #00000014;
+}
+.iso[data-theme="light"]{
+  --anatomy-page:#f2f2ef;--anatomy-card:#fbfbfa;--anatomy-text:#57575a;--anatomy-strong:#18181a;--anatomy-muted:#8c8c90;
+  --anatomy-paper:#fbfbfa;--anatomy-face:#ffffff;--anatomy-top:#ffffff;
+  --anatomy-shade-0:#dcdcd9;--anatomy-shade-1:#e5e5e2;--anatomy-shade-2:#ededea;--anatomy-shade-3:#f4f4f1;
+  --anatomy-lit-top:#ffffff;--anatomy-lit-shade:#eeeeeb;
+  --anatomy-hi:#26262a;--anatomy-mid:#8a8a8f;--anatomy-lo:#b4b4b8;--anatomy-faint:#d4d4d6;--anatomy-lit:#000000;
+  --anatomy-halo:#8a8a80;--anatomy-halo-opacity:.32;--anatomy-dot:#3a3a3e;
+  --anatomy-red:#e5484d;--anatomy-green:#30a46c;--anatomy-blue:#3e63dd;
+  --anatomy-lift:inset 0 1px 0 0 #ffffff,0 0 0 1px #0000000f,0 1px 1px -.5px #0000000a,0 3px 3px -1.5px #0000000a,0 6px 6px -3px #0000000a,0 12px 12px -6px #0000000a;
+}
+.iso-svg{display:block;width:100%;height:auto;overflow:visible}
+.iso-svg path,.iso-svg circle{vector-effect:non-scaling-stroke}
+.iso-fill{fill:var(--anatomy-paper);stroke:none}
+.iso-solid[data-lit]>.iso-fill{fill:var(--anatomy-face)}
+.iso-shade,.iso-top{stroke:none}
+.iso-shade[data-shade="0"]{fill:var(--anatomy-shade-0)}
+.iso-shade[data-shade="1"]{fill:var(--anatomy-shade-1)}
+.iso-shade[data-shade="2"]{fill:var(--anatomy-shade-2)}
+.iso-shade[data-shade="3"]{fill:var(--anatomy-shade-3)}
+.iso-top{fill:var(--anatomy-top)}
+.iso-solid[data-lit]>.iso-top{fill:var(--anatomy-lit-top)}
+.iso-solid[data-lit]>.iso-shade{fill:var(--anatomy-lit-shade)}
+.iso-solid[data-seamless]>.iso-shade,.iso-solid[data-seamless]>.iso-top{stroke-width:.4;stroke-linejoin:round}
+.iso-solid[data-seamless]>.iso-shade[data-shade="0"]{stroke:var(--anatomy-shade-0)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="1"]{stroke:var(--anatomy-shade-1)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="2"]{stroke:var(--anatomy-shade-2)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="3"]{stroke:var(--anatomy-shade-3)}
+.iso-solid[data-seamless]>.iso-top{stroke:var(--anatomy-top)}
+.iso-solid[data-seamless][data-lit]>.iso-top{stroke:var(--anatomy-lit-top)}
+.iso-solid[data-seamless][data-lit]>.iso-shade{stroke:var(--anatomy-lit-shade)}
+.iso-solid[data-lit]>.iso-edge{stroke:var(--anatomy-lit)}
+.iso-halo{fill:var(--anatomy-halo);stroke:none;filter:blur(9px);opacity:var(--anatomy-halo-opacity);transform:translateY(3px)}
+.iso-line{fill:none;stroke:var(--anatomy-lo);stroke-width:var(--anatomy-weight);stroke-linecap:round;stroke-linejoin:round}
+.iso-line[data-tone="hi"]{stroke:var(--anatomy-hi)}
+.iso-line[data-tone="mid"]{stroke:var(--anatomy-mid)}
+.iso-line[data-tone="lo"]{stroke:var(--anatomy-lo)}
+.iso-line[data-tone="faint"]{stroke:var(--anatomy-faint)}
+.iso-line[data-tone="lit"]{stroke:var(--anatomy-lit)}
+.iso-line[data-tone="red"]{stroke:var(--anatomy-red)}
+.iso-line[data-tone="green"]{stroke:var(--anatomy-green)}
+.iso-line[data-tone="blue"]{stroke:var(--anatomy-blue)}
+.iso-line[data-dotted]{stroke-dasharray:.01 3.5;stroke-width:1}
+.iso-line[data-dashed]{stroke-dasharray:3 3}
+.iso-line[data-flow]{stroke-dasharray:2 6}
+.iso-wire-end{fill:var(--anatomy-paper);stroke:var(--anatomy-lo);stroke-width:var(--anatomy-weight)}
+.iso-wire[data-tone="hi"] .iso-wire-end{stroke:var(--anatomy-hi)}
+.iso-wire[data-tone="mid"] .iso-wire-end{stroke:var(--anatomy-mid)}
+.iso-wire[data-tone="faint"] .iso-wire-end{stroke:var(--anatomy-faint)}
+.iso-wire[data-tone="lit"] .iso-wire-end{stroke:var(--anatomy-lit)}
+.iso-dots circle{fill:var(--anatomy-dot);stroke:none;opacity:.32}
+.iso-dots[data-tone="hi"] circle{opacity:.85}
+.iso-dots[data-tone="mid"] circle{opacity:.45}
+.iso-dots[data-tone="lo"] circle{opacity:.22}
+.iso-dots[data-tone="faint"] circle{opacity:.12}
+.iso-face-text{fill:var(--anatomy-mid);font-family:var(--anatomy-mono);letter-spacing:.04em}
+.iso-face-text[data-tone="hi"]{fill:var(--anatomy-hi)}
+.iso-face-text[data-tone="lo"]{fill:var(--anatomy-lo)}
+.iso-face-text[data-tone="faint"]{fill:var(--anatomy-faint)}
+.tb-body{fill:var(--anatomy-shade-2);stroke:none}
+.tb-shine{fill:var(--anatomy-top);stroke:none}
+.tb-shade{fill:var(--anatomy-shade-0);stroke:none}
+.tb-ring{fill:none;stroke:var(--anatomy-lo);stroke-width:.45;stroke-linecap:butt;stroke-linejoin:round}
+.tb-ring[data-tone="mid"]{stroke:var(--anatomy-mid)}
+.tb-ring[data-tone="faint"]{stroke:var(--anatomy-faint)}
+.tb-ring[data-tone="hi"]{stroke:var(--anatomy-hi)}
+@keyframes iso-flow{to{stroke-dashoffset:-32}}
+@keyframes iso-pulse{0%,100%{opacity:.18}12%{opacity:1}40%{opacity:.18}}
+.iso-line[data-flow]{animation:iso-flow 1600ms linear infinite}
+.iso-dots circle[data-pulse]{animation:iso-pulse 1600ms steps(1,end) infinite;animation-delay:var(--pulse-at,0ms)}
+.iso-figure{margin:32px 0 36px}
+.iso-plate{position:relative;padding:52px 24px;border-radius:0;background:var(--anatomy-card);box-shadow:0 0 0 1px var(--anatomy-mid);--anatomy-paper:var(--anatomy-card)}
+.iso-plate-corners{position:absolute;inset:18px 20px;pointer-events:none}
+.iso-plate-corner{position:absolute;color:var(--anatomy-muted);font-family:var(--anatomy-mono);font-size:10.5px;line-height:1;letter-spacing:.04em;white-space:nowrap}
+.iso-plate-corner[data-corner="fig"]{top:0;left:0;color:var(--anatomy-text)}
+.iso-plate-corner[data-corner="title"]{top:0;right:0;text-transform:uppercase;letter-spacing:.1em}
+.iso-plate-corner[data-corner="hint"]{bottom:0;left:0;text-transform:uppercase;letter-spacing:.1em}
+.iso-plate-corner[data-corner="readout"]{right:0;bottom:0;color:var(--anatomy-text);font-variant-numeric:tabular-nums}
+.iso-plate .iso-svg{margin:0 auto}
+.iso-legend{display:grid;gap:8px;margin-top:12px;color:var(--anatomy-muted);font-size:13px;line-height:1.55}
+.iso-keys{display:flex;flex-wrap:wrap;gap:6px 18px}
+.iso-key{display:inline-flex;align-items:center;gap:7px}
+.iso-swatch{width:16px;height:10px;flex:none;overflow:visible}
+.iso-swatch path{fill:none;stroke:var(--anatomy-hi);stroke-width:1;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+.iso-swatch[data-mark="raised"] path,.iso-swatch[data-mark="flat"] path{stroke:var(--anatomy-mid)}
+.iso-swatch[data-mark="lit"] path{stroke:var(--anatomy-lit)}
+.iso-swatch[data-mark="dim"] path{stroke:var(--anatomy-lo)}
+.iso-swatch[data-mark="dotted"] path{stroke-dasharray:.01 3;stroke-width:1.4}
+.iso-swatch[data-mark="dashed"] path{stroke-dasharray:3 2.5}
+.iso-swatch[data-mark="red"] path{stroke:var(--anatomy-red)}
+.iso-swatch[data-mark="green"] path{stroke:var(--anatomy-green)}
+.iso-swatch[data-mark="blue"] path{stroke:var(--anatomy-blue)}
+.iso-swatch-crease{stroke:var(--anatomy-lo)!important}
+@media (max-width:560px){.iso-plate{padding:48px 12px 70px}.iso-plate-corner[data-corner="hint"]{bottom:18px}}
+@media (prefers-reduced-motion:reduce){.iso-line[data-flow],.iso-dots circle[data-pulse]{animation:none}}
+
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body[data-theme="light"]{color-scheme:light}
+body{margin:0;background:var(--anatomy-page);color:var(--anatomy-text);font:14px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.iso-page{width:min(1240px,100% - 32px);margin:64px auto 96px}
+</style></head><body class="iso" data-theme="dark"><main class="iso-page"><style>.bp-layout{display:grid;grid-template-columns:208px minmax(0,1fr);gap:22px;align-items:start}
+.bp-steps{position:sticky;top:24px;display:flex;flex-direction:column;gap:8px}
+.bp-step{position:relative;overflow:hidden;display:flex;gap:10px;align-items:baseline;width:100%;padding:11px 12px;border:0;border-radius:0;background:var(--anatomy-card);box-shadow:0 0 0 1px var(--anatomy-faint);color:var(--anatomy-muted);font:12.5px/1.35 var(--anatomy-mono);text-align:left;cursor:not-allowed;transition:box-shadow .3s var(--anatomy-ease),color .3s var(--anatomy-ease)}
+.bp-step-n{color:var(--anatomy-lo);font-variant-numeric:tabular-nums}
+.bp-step[data-state="next"]{color:var(--anatomy-text);box-shadow:0 0 0 1px var(--anatomy-mid)}
+.bp-step[data-state="next"]:not([disabled]){color:var(--anatomy-strong);box-shadow:0 0 0 1px var(--anatomy-lit);cursor:pointer}
+.bp-step[data-state="next"]:not([disabled]) .bp-step-n{color:var(--anatomy-strong)}
+.bp-step[data-state="next"]:not([disabled]):hover{background:var(--anatomy-face)}
+.bp-step[data-state="done"]{color:var(--anatomy-mid)}
+.bp-step[data-state="done"] .bp-step-n::after{content:" ✓"}
+.bp-step:focus-visible,.bp-toggle:focus-visible{outline:1px solid var(--anatomy-muted);outline-offset:3px}
+.bp-step-fill{position:absolute;left:0;bottom:0;height:2px;width:100%;transform-origin:left;transform:scaleX(var(--fill,0));background:var(--anatomy-lit)}
+.bp-toggle{margin-top:10px;padding:8px 12px;border:0;background:transparent;box-shadow:0 0 0 1px var(--anatomy-faint);color:var(--anatomy-muted);font:11.5px/1.3 var(--anatomy-mono);text-align:left;cursor:pointer}
+.bp-toggle:hover{color:var(--anatomy-strong)}
+.bp-main{min-width:0}
+.bp-main .iso-plate{overflow:hidden}
+.bp-say{margin:14px 0 0;min-height:2.9em;color:var(--anatomy-strong);font-size:15px;line-height:1.45}
+.bp-say b{font-weight:600}
+.bp-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.bp-chip{display:inline-flex;gap:8px;align-items:baseline;padding:5px 9px;background:var(--anatomy-card);box-shadow:0 0 0 1px var(--anatomy-faint);font:11.5px/1.3 var(--anatomy-mono)}
+.bp-chip-name{color:var(--anatomy-muted)}
+.bp-chip-value{color:var(--anatomy-strong);font-variant-numeric:tabular-nums}
+.bp-idea{margin:16px 0 0;color:var(--anatomy-strong);font-size:15px}
+.bp-idea b{font-weight:600}
+.bp-facts{margin:10px 0 0;padding-left:18px;color:var(--anatomy-text);font-size:13px}
+.bp-facts li{margin:0 0 4px}.bp-facts b{color:var(--anatomy-strong);font-weight:600}
+.bp-notes{margin:14px 0 0;color:var(--anatomy-text);font-size:13px}
+.bp-notes summary{cursor:pointer;color:var(--anatomy-muted);font:11.5px/1.4 var(--anatomy-mono);letter-spacing:.04em;text-transform:uppercase}
+.bp-notes ul{margin:10px 0 0;padding-left:18px}.bp-notes li{margin:0 0 6px}
+.bp-notes b{color:var(--anatomy-strong);font-weight:600}
+.bp-sources{margin:10px 0 0;color:var(--anatomy-muted);font-size:12px}.bp-sources a{color:inherit}
+.bp-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.bp-ledger-wrap{margin:14px 0 0;overflow-x:auto}
+.bp-ledger{border-collapse:collapse;width:100%;min-width:680px;font:11.5px/1.35 var(--anatomy-mono);color:var(--anatomy-text);font-variant-numeric:tabular-nums}
+.bp-ledger th{font-weight:400;color:var(--anatomy-muted);text-align:left;padding:5px 8px;border-bottom:1px solid var(--anatomy-faint)}
+.bp-ledger td{padding:5px 8px;border-bottom:1px solid var(--anatomy-faint)}
+.bp-ledger tr[data-on] td{color:var(--anatomy-strong);background:var(--anatomy-card)}
+.bp-ledger tr[data-on] td:first-child{box-shadow:inset 2px 0 0 var(--anatomy-lit)}
+
+
+.iso{--bp-go:#34c3a7;--bp-limit:#ff5a4f;--bp-w:#f2cf4a;--bp-r:#ededed;--bp-panel:#161616;--bp-well:#090909}
+.iso[data-theme="light"]{--bp-go:#0e8f76;--bp-limit:#d93a2f;--bp-w:#b08a08;--bp-r:#2a2a2d;--bp-panel:#f6f6f2;--bp-well:#e9e9e5}
+.bp-panel{fill:var(--bp-panel);stroke:var(--anatomy-faint);stroke-width:1}
+.bp-box{fill:none;stroke:var(--anatomy-faint)}
+.bp-box2{fill:var(--bp-well);stroke:var(--anatomy-lo)}
+.bp-t{fill:var(--anatomy-text);font:12.5px var(--anatomy-mono)}
+.bp-b{font-weight:600;fill:var(--anatomy-strong)}
+.bp-s{fill:var(--anatomy-text);font:10.5px var(--anatomy-mono)}
+.bp-mid{fill:var(--anatomy-muted)}
+.bp-h{fill:var(--anatomy-muted);font:10.5px var(--anatomy-mono);letter-spacing:.07em}
+.bp-big{fill:var(--anatomy-strong);font:600 18px var(--anatomy-mono);font-variant-numeric:tabular-nums}
+.bp-sm{fill:var(--anatomy-faint)}
+.bp-l2{fill:var(--bp-panel);stroke:var(--anatomy-lo)}
+.bp-chip{fill:var(--anatomy-faint);stroke:var(--anatomy-lo)}
+.bp-chip-on{transition:fill .4s var(--anatomy-ease)}
+[data-open] .bp-chip-on{fill:var(--bp-limit)}
+.bp-hl{fill:none;stroke:var(--anatomy-lo);stroke-width:2.5;transition:stroke .4s var(--anatomy-ease)}
+[data-open] .bp-hl{stroke:var(--bp-limit)}
+.bp-zoom{fill:none;stroke:var(--anatomy-lo);stroke-dasharray:3 3}
+.bp-wire{stroke:var(--anatomy-mid);fill:none}
+.bp-rule{stroke:var(--anatomy-faint);fill:none}
+.bp-axis{stroke:var(--anatomy-mid);fill:none;stroke-width:1.2}
+.bp-num{fill:var(--anatomy-faint)}
+.bp-num[data-on="r"]{fill:var(--bp-r)}.bp-num[data-on="w"]{fill:var(--bp-w)}
+.bp-pipe{fill:var(--bp-well);stroke:var(--anatomy-mid);stroke-width:1.5}
+.bp-mid-line{stroke:var(--anatomy-faint);fill:none}
+.bp-valve{stroke:var(--bp-limit);stroke-width:3;fill:none}
+[data-open] .bp-valve{stroke-width:0}
+.bp-dot-r{fill:var(--bp-r)}.bp-dot-w{fill:var(--bp-w)}
+.bp-grid-bg{fill:var(--bp-well)}
+.bp-grid{stroke:var(--anatomy-faint);stroke-width:.4;fill:none}
+.bp-fill{fill:var(--bp-go)}
+.bp-tag{fill:var(--bp-limit)}
+.bp-tag-t{fill:#fff;font:600 10.5px var(--anatomy-mono);letter-spacing:.06em}
+.bp-bar-m,.bp-bar-l{fill:var(--anatomy-mid)}
+.bp-bar-m[data-limit],.bp-bar-l[data-limit]{fill:var(--bp-limit)}
+.bp-run{stroke:var(--anatomy-strong);stroke-width:1.5;fill:none}
+.bp-zone-m,.bp-zone-l{fill:var(--bp-well)}
+.bp-zone-m[data-on],.bp-zone-l[data-on]{fill:color-mix(in srgb,var(--bp-limit) 22%,var(--bp-well))}
+.bp-bal{stroke:var(--anatomy-strong);stroke-width:1.5;fill:none}
+.bp-mark{fill:var(--bp-limit)}
+.bp-stage{transition:opacity .5s var(--anatomy-ease);opacity:.14}
+.bp-stage[data-seen]{opacity:1}
+.bp-slider{display:flex;gap:12px;align-items:center;margin:10px 0 0;font:12px var(--anatomy-mono);color:var(--anatomy-text)}
+.bp-slider[data-off]{opacity:.35}
+.bp-slider input{flex:1;min-width:0;accent-color:var(--anatomy-strong)}
+.bp-slider output{min-width:5em;text-align:right;color:var(--anatomy-strong);font-variant-numeric:tabular-nums}
+.bp-say .bp-g{color:var(--bp-go);font-weight:600}.bp-say .bp-r{color:var(--bp-limit);font-weight:600}
+.bp-swipe{display:none}
+@media (max-width:820px){.bp-swipe{display:block;margin:8px 0 0;color:var(--anatomy-muted);font:11px var(--anatomy-mono)}.bp-slider{margin-bottom:26px}.bp-layout{grid-template-columns:1fr;gap:14px}.bp-steps{position:static;display:grid;grid-template-columns:1fr 1fr;gap:6px}.bp-step{padding:9px 10px;font-size:11.5px}.bp-main .iso-plate{padding:44px 10px}.bp-stage-box{overflow-x:auto}.bp-stage-box svg{min-width:760px}}
+
+</style><div class="bp-layout"><nav class="bp-steps" aria-label="Steps"><button class="bp-step" type="button" data-step="0"><span class="bp-step-n">01</span><span>Open the pipe</span><span class="bp-step-fill" aria-hidden="true"></span></button><button class="bp-step" type="button" data-step="1" disabled><span class="bp-step-n">02</span><span>Count it in numbers</span><span class="bp-step-fill" aria-hidden="true"></span></button><button class="bp-step" type="button" data-step="2" disabled><span class="bp-step-n">03</span><span>Run c = a + b</span><span class="bp-step-fill" aria-hidden="true"></span></button><button class="bp-step" type="button" data-step="3" disabled><span class="bp-step-n">04</span><span>Compare with the lanes</span><span class="bp-step-fill" aria-hidden="true"></span></button><button class="bp-step" type="button" data-step="4" disabled><span class="bp-step-n">05</span><span>Find the balance point</span><span class="bp-step-fill" aria-hidden="true"></span></button><button class="bp-step" type="button" data-step="5" disabled><span class="bp-step-n">06</span><span>Add math per element</span><span class="bp-step-fill" aria-hidden="true"></span></button><button class="bp-step" type="button" data-step="6" disabled><span class="bp-step-n">07</span><span>Swap in a bigger card</span><span class="bp-step-fill" aria-hidden="true"></span></button><button class="bp-step" type="button" data-step="7" disabled><span class="bp-step-n">08</span><span>New kernel</span><span class="bp-step-fill" aria-hidden="true"></span></button></nav><div class="bp-main"><figure class="iso-figure"><div class="iso-plate"><div class="iso-plate-corners" aria-hidden="true"><span class="iso-plate-corner" data-corner="fig">Fig 7</span><span class="iso-plate-corner" data-corner="title">Each byte has to carry math</span><span class="iso-plate-corner" data-corner="hint">Press the lit step</span><span class="iso-plate-corner" data-corner="readout" data-readout>pipe closed</span></div><div class="iso-stage bp-stage-box"><svg class="iso-svg" viewBox="0 0 1000 640" role="img" aria-label="A flat board. Top left, a map of a whole GPU with the path from one VRAM chip to the chip highlighted. To its right a flow diagram: VRAM, a pipe labelled in gigabytes a second, and a box of lanes with the share busy filled in. Below, two log-scale bars compare the elements a second memory allows with what the lanes could do, and a log number line of operations per byte marks the balance point and the current kernel."><g class="bp-map"><rect class="bp-panel" x="20" y="20" width="252" height="208" /><text class="bp-h" x="32" y="40" >THE WHOLE GPU</text><rect class="bp-box" x="30" y="50" width="232" height="170" /><rect class="bp-box2" x="84" y="72" width="126" height="112" /><rect class="bp-sm" x="92" y="80" width="15" height="28" data-sm="0.0"/><rect class="bp-sm" x="92" y="144" width="15" height="28" data-sm="0.1"/><rect class="bp-sm" x="111" y="80" width="15" height="28" data-sm="1.0"/><rect class="bp-sm" x="111" y="144" width="15" height="28" data-sm="1.1"/><rect class="bp-sm" x="130" y="80" width="15" height="28" data-sm="2.0"/><rect class="bp-sm" x="130" y="144" width="15" height="28" data-sm="2.1"/><rect class="bp-sm" x="149" y="80" width="15" height="28" data-sm="3.0"/><rect class="bp-sm" x="149" y="144" width="15" height="28" data-sm="3.1"/><rect class="bp-sm" x="168" y="80" width="15" height="28" data-sm="4.0"/><rect class="bp-sm" x="168" y="144" width="15" height="28" data-sm="4.1"/><rect class="bp-sm" x="187" y="80" width="15" height="28" data-sm="5.0"/><rect class="bp-sm" x="187" y="144" width="15" height="28" data-sm="5.1"/><rect class="bp-l2" x="92" y="118" width="110" height="20" /><text class="bp-s" x="147" y="132" text-anchor="middle">L2 cache</text><rect class="bp-chip" x="94" y="56" width="22" height="12" /><rect class="bp-chip" x="94" y="188" width="22" height="12" /><rect class="bp-chip" x="122" y="56" width="22" height="12" /><rect class="bp-chip" x="122" y="188" width="22" height="12" /><rect class="bp-chip" x="150" y="56" width="22" height="12" /><rect class="bp-chip" x="150" y="188" width="22" height="12" /><rect class="bp-chip" x="178" y="56" width="22" height="12" /><rect class="bp-chip" x="178" y="188" width="22" height="12" /><rect class="bp-chip" x="40" y="84" width="12" height="26" /><rect class="bp-chip" x="242" y="84" width="12" height="26" /><rect class="bp-chip" x="40" y="120" width="12" height="26" /><rect class="bp-chip" x="242" y="120" width="12" height="26" /><path class="bp-hl" data-hl d="M253 126H210H202V128H184V108"/><rect class="bp-chip bp-chip-on" x="242" y="120" width="12" height="26" data-hlbox/><rect class="bp-sm bp-chip-on" x="179" y="80" width="15" height="28" data-hlbox/><text class="bp-s bp-mid" x="146" y="214" text-anchor="middle">the path we zoom into</text><path class="bp-zoom" d="M254 120L298 66M254 146L298 190"/></g><g data-from="6" class="bp-stage"><rect class="bp-panel" x="20" y="240" width="252" height="240" /><text class="bp-h" x="32" y="260" >WHERE BANDWIDTH COMES FROM</text><path class="bp-wire" d="M36 276V330M45.4 276V330M54.8 276V330M64.2 276V330M73.6 276V330M83 276V330M92.4 276V330M101.8 276V330M111.2 276V330M120.60000000000001 276V330M130 276V330M139.4 276V330M148.8 276V330M158.2 276V330M167.6 276V330M177 276V330M186.4 276V330M195.8 276V330M205.20000000000002 276V330M214.6 276V330M224 276V330M233.4 276V330M242.8 276V330M252.20000000000002 276V330"/><text class="bp-s bp-mid" x="146" y="346" text-anchor="middle">drawn: 24 of 384 wires</text><text class="bp-t" x="146" y="374" text-anchor="middle">384 wires</text><text class="bp-t" x="146" y="392" text-anchor="middle">× 21 gigabits a second</text><text class="bp-t" x="146" y="410" text-anchor="middle">÷ 8 bits in a byte</text><path class="bp-rule" d="M60 420H232"/><text class="bp-big" x="146" y="442" text-anchor="middle" data-wire></text><text class="bp-s bp-mid" x="146" y="462" text-anchor="middle">about 1,000 GB/s</text></g><rect class="bp-panel" x="20" y="490" width="252" height="130" /><text class="bp-h" x="32" y="510" >HOW TO READ THIS BOARD</text><circle class="bp-dot-r" cx="38" cy="530" r="3"/><circle class="bp-dot-w" cx="38" cy="550" r="3"/><text class="bp-s" x="50" y="534" >read traffic</text><text class="bp-s" x="50" y="554" >write traffic</text><text class="bp-s bp-mid" x="32" y="574" >one dot: 10 GB a second</text><rect class="bp-tag" x="32" y="586" width="58" height="16" /><text class="bp-tag-t" x="61" y="598" text-anchor="middle">LIMIT</text><text class="bp-s" x="98" y="598" >sets the speed</text><rect class="bp-panel" x="286" y="20" width="700" height="228" /><text class="bp-h" x="298" y="40" >THE ZOOM: VRAM → PIPE → LANES</text><rect class="bp-box2" x="298" y="66" width="112" height="124" /><text class="bp-t bp-b" x="354" y="86" text-anchor="middle">VRAM</text><text class="bp-t bp-b" x="308" y="114" >a</text><rect class="bp-num" x="322" y="100" width="9" height="20" data-arr="a"/><rect class="bp-num" x="332" y="100" width="9" height="20" data-arr="a"/><rect class="bp-num" x="342" y="100" width="9" height="20" data-arr="a"/><rect class="bp-num" x="352" y="100" width="9" height="20" data-arr="a"/><rect class="bp-num" x="362" y="100" width="9" height="20" data-arr="a"/><rect class="bp-num" x="372" y="100" width="9" height="20" data-arr="a"/><rect class="bp-num" x="382" y="100" width="9" height="20" data-arr="a"/><rect class="bp-num" x="392" y="100" width="9" height="20" data-arr="a"/><text class="bp-t bp-b" x="308" y="142" >b</text><rect class="bp-num" x="322" y="128" width="9" height="20" data-arr="b"/><rect class="bp-num" x="332" y="128" width="9" height="20" data-arr="b"/><rect class="bp-num" x="342" y="128" width="9" height="20" data-arr="b"/><rect class="bp-num" x="352" y="128" width="9" height="20" data-arr="b"/><rect class="bp-num" x="362" y="128" width="9" height="20" data-arr="b"/><rect class="bp-num" x="372" y="128" width="9" height="20" data-arr="b"/><rect class="bp-num" x="382" y="128" width="9" height="20" data-arr="b"/><rect class="bp-num" x="392" y="128" width="9" height="20" data-arr="b"/><text class="bp-t bp-b" x="308" y="170" >c</text><rect class="bp-num" x="322" y="156" width="9" height="20" data-arr="c"/><rect class="bp-num" x="332" y="156" width="9" height="20" data-arr="c"/><rect class="bp-num" x="342" y="156" width="9" height="20" data-arr="c"/><rect class="bp-num" x="352" y="156" width="9" height="20" data-arr="c"/><rect class="bp-num" x="362" y="156" width="9" height="20" data-arr="c"/><rect class="bp-num" x="372" y="156" width="9" height="20" data-arr="c"/><rect class="bp-num" x="382" y="156" width="9" height="20" data-arr="c"/><rect class="bp-num" x="392" y="156" width="9" height="20" data-arr="c"/><path class="bp-pipe" d="M410 100H716V156H410Z"/><path class="bp-mid-line" d="M410 128H716"/><path class="bp-valve" data-valve d="M412 102V154"/><text class="bp-s bp-mid" x="414" y="94" >reads →</text><text class="bp-s bp-mid" x="712" y="94" text-anchor="end">← writes</text><path class="bp-dot-r" data-dots="r" d=""/><path class="bp-dot-w" data-dots="w" d=""/><text class="bp-big" x="563" y="78" text-anchor="middle" data-bw></text><text class="bp-t bp-b" x="563" y="178" text-anchor="middle" data-under></text><text class="bp-s bp-mid" x="563" y="196" text-anchor="middle" data-under2></text><g data-tag="pipe" style="display:none"><rect class="bp-tag" x="521" y="38" width="84" height="18" /><text class="bp-tag-t" x="563" y="51" text-anchor="middle">THE LIMIT</text></g><rect class="bp-box2" x="716" y="44" width="262" height="180" /><text class="bp-t bp-b" x="730" y="63" >LANES</text><text class="bp-t bp-b" x="964" y="63" text-anchor="end" data-ops></text><text class="bp-big" x="730" y="84" data-busy></text><text class="bp-s bp-mid" x="964" y="84" text-anchor="end" data-idle></text><g data-from="3" class="bp-stage"><rect class="bp-grid-bg" x="729" y="95" width="236" height="95.6" /><rect class="bp-fill" x="730" y="96" width="0" height="0" data-fill/><path class="bp-grid" d="M730.00 96V189.6M734.68 96V189.6M739.36 96V189.6M744.04 96V189.6M748.72 96V189.6M753.40 96V189.6M758.08 96V189.6M762.76 96V189.6M767.44 96V189.6M772.12 96V189.6M776.80 96V189.6M781.48 96V189.6M786.16 96V189.6M790.84 96V189.6M795.52 96V189.6M800.20 96V189.6M804.88 96V189.6M809.56 96V189.6M814.24 96V189.6M818.92 96V189.6M823.60 96V189.6M828.28 96V189.6M832.96 96V189.6M837.64 96V189.6M842.32 96V189.6M847.00 96V189.6M851.68 96V189.6M856.36 96V189.6M861.04 96V189.6M865.72 96V189.6M870.40 96V189.6M875.08 96V189.6M879.76 96V189.6M884.44 96V189.6M889.12 96V189.6M893.80 96V189.6M898.48 96V189.6M903.16 96V189.6M907.84 96V189.6M912.52 96V189.6M917.20 96V189.6M921.88 96V189.6M926.56 96V189.6M931.24 96V189.6M935.92 96V189.6M940.60 96V189.6M945.28 96V189.6M949.96 96V189.6M954.64 96V189.6M959.32 96V189.6M964.00 96V189.6M730 96.00H964M730 100.68H964M730 105.36H964M730 110.04H964M730 114.72H964M730 119.40H964M730 124.08H964M730 128.76H964M730 133.44H964M730 138.12H964M730 142.80H964M730 147.48H964M730 152.16H964M730 156.84H964M730 161.52H964M730 166.20H964M730 170.88H964M730 175.56H964M730 180.24H964M730 184.92H964M730 189.60H964"/><text class="bp-s bp-mid" x="730" y="216" >1,000 cells: each is 0.1% of the lanes</text></g><g data-tag="lanes" style="display:none"><rect class="bp-tag" x="884" y="33" width="84" height="18" /><text class="bp-tag-t" x="926" y="46" text-anchor="middle">THE LIMIT</text></g><g data-from="3" class="bp-stage"><rect class="bp-panel" x="286" y="258" width="700" height="150" /><text class="bp-h" x="298" y="276" >ELEMENTS A SECOND · LOG SCALE, EACH MARK IS × 10</text><path class="bp-rule" d="M444 302V376"/><text class="bp-s bp-mid" x="444" y="389" text-anchor="middle">100M</text><path class="bp-rule" d="M531.6666666666666 302V376"/><text class="bp-s bp-mid" x="531.6666666666666" y="389" text-anchor="middle">1B</text><path class="bp-rule" d="M619.3333333333333 302V376"/><text class="bp-s bp-mid" x="619.3333333333333" y="389" text-anchor="middle">10B</text><path class="bp-rule" d="M707 302V376"/><text class="bp-s bp-mid" x="707" y="389" text-anchor="middle">100B</text><path class="bp-rule" d="M794.6666666666666 302V376"/><text class="bp-s bp-mid" x="794.6666666666666" y="389" text-anchor="middle">1T</text><path class="bp-rule" d="M882.3333333333334 302V376"/><text class="bp-s bp-mid" x="882.3333333333334" y="389" text-anchor="middle">10T</text><path class="bp-rule" d="M970 302V376"/><text class="bp-s bp-mid" x="970" y="389" text-anchor="middle">100T</text><text class="bp-t" x="432" y="328" text-anchor="end">memory allows</text><text class="bp-t" x="432" y="364" text-anchor="end">the lanes could do</text><rect class="bp-bar-m" x="444" y="310" width="0" height="26" data-bar="memory"/><rect class="bp-bar-l" x="444" y="346" width="0" height="26" data-bar="lanes"/><text class="bp-t bp-b" x="0" y="328" data-val="memory"></text><text class="bp-t bp-b" x="0" y="364" data-val="lanes"></text><path class="bp-run" data-run d=""/><text class="bp-s bp-b" x="0" y="299" data-runlabel text-anchor="middle"></text></g><g data-from="4" class="bp-stage"><rect class="bp-panel" x="286" y="416" width="700" height="204" /><text class="bp-h" x="298" y="436" >OPERATIONS PER BYTE · LOG SCALE</text><rect class="bp-zone-m" x="310" y="528" width="0" height="34" data-zone="m"/><rect class="bp-zone-l" x="0" y="528" width="0" height="34" data-zone="l"/><text class="bp-t" x="0" y="549" data-zt="m" text-anchor="middle">memory-bound</text><text class="bp-t" x="0" y="549" data-zt="l" text-anchor="middle">compute-bound</text><path class="bp-axis" d="M310 562H966"/><path class="bp-axis" d="M310 562V569"/><text class="bp-s" x="310" y="584" text-anchor="middle">0.01</text><path class="bp-rule" d="M342.91261285926197 562V566"/><path class="bp-rule" d="M362.1652571826831 562V566"/><path class="bp-rule" d="M375.82522571852394 562V566"/><path class="bp-rule" d="M386.42072047407135 562V566"/><path class="bp-rule" d="M395.07787004194506 562V566"/><path class="bp-rule" d="M402.39738570822544 562V566"/><path class="bp-rule" d="M408.73783857778585 562V566"/><path class="bp-rule" d="M414.3305143653662 562V566"/><path class="bp-axis" d="M419.3333333333333 562V569"/><text class="bp-s" x="419.3333333333333" y="584" text-anchor="middle">0.1</text><path class="bp-rule" d="M452.2459461925953 562V566"/><path class="bp-rule" d="M471.49859051601646 562V566"/><path class="bp-rule" d="M485.1585590518572 562V566"/><path class="bp-rule" d="M495.7540538074047 562V566"/><path class="bp-rule" d="M504.4112033752784 562V566"/><path class="bp-rule" d="M511.73071904155876 562V566"/><path class="bp-rule" d="M518.0711719111191 562V566"/><path class="bp-rule" d="M523.6638476986996 562V566"/><path class="bp-axis" d="M528.6666666666666 562V569"/><text class="bp-s" x="528.6666666666666" y="584" text-anchor="middle">1</text><path class="bp-rule" d="M561.5792795259287 562V566"/><path class="bp-rule" d="M580.8319238493498 562V566"/><path class="bp-rule" d="M594.4918923851906 562V566"/><path class="bp-rule" d="M605.0873871407381 562V566"/><path class="bp-rule" d="M613.7445367086117 562V566"/><path class="bp-rule" d="M621.0640523748921 562V566"/><path class="bp-rule" d="M627.4045052444525 562V566"/><path class="bp-rule" d="M632.9971810320328 562V566"/><path class="bp-axis" d="M638 562V569"/><text class="bp-s" x="638" y="584" text-anchor="middle">10</text><path class="bp-rule" d="M670.912612859262 562V566"/><path class="bp-rule" d="M690.165257182683 562V566"/><path class="bp-rule" d="M703.8252257185238 562V566"/><path class="bp-rule" d="M714.4207204740715 562V566"/><path class="bp-rule" d="M723.0778700419451 562V566"/><path class="bp-rule" d="M730.3973857082254 562V566"/><path class="bp-rule" d="M736.7378385777859 562V566"/><path class="bp-rule" d="M742.3305143653662 562V566"/><path class="bp-axis" d="M747.3333333333333 562V569"/><text class="bp-s" x="747.3333333333333" y="584" text-anchor="middle">100</text><path class="bp-rule" d="M780.2459461925953 562V566"/><path class="bp-rule" d="M799.4985905160165 562V566"/><path class="bp-rule" d="M813.1585590518573 562V566"/><path class="bp-rule" d="M823.7540538074047 562V566"/><path class="bp-rule" d="M832.4112033752783 562V566"/><path class="bp-rule" d="M839.7307190415588 562V566"/><path class="bp-rule" d="M846.0711719111191 562V566"/><path class="bp-rule" d="M851.6638476986996 562V566"/><path class="bp-axis" d="M856.6666666666667 562V569"/><text class="bp-s" x="856.6666666666667" y="584" text-anchor="middle">1,000</text><path class="bp-rule" d="M889.5792795259285 562V566"/><path class="bp-rule" d="M908.8319238493498 562V566"/><path class="bp-rule" d="M922.4918923851906 562V566"/><path class="bp-rule" d="M933.087387140738 562V566"/><path class="bp-rule" d="M941.7445367086118 562V566"/><path class="bp-rule" d="M949.0640523748921 562V566"/><path class="bp-rule" d="M955.4045052444526 562V566"/><path class="bp-rule" d="M960.9971810320328 562V566"/><path class="bp-axis" d="M966 562V569"/><text class="bp-s" x="966" y="584" text-anchor="middle">10,000</text><g data-balance><path class="bp-bal" d="M0 516V572"/><text class="bp-t bp-b" x="0" y="510" data-baltext text-anchor="middle"></text></g><g data-marker><path class="bp-mark" d="M0 564L-6 574H6Z"/></g><text class="bp-t bp-b" x="0" y="606" data-marktext text-anchor="middle"></text></g></svg><span class="bp-sr" role="status" aria-live="polite" data-status></span></div><p class="bp-swipe">Swipe the board sideways to see all of it.</p><div class="bp-slider" data-sliderbox data-off><label for="bp-ops">Operations per element</label><input id="bp-ops" type="range" min="0" max="1000" value="0" step="1" disabled data-slider><output data-slideout>1</output></div></div><figcaption class="iso-legend"><span class="iso-keys"><span class="iso-key"><svg class="iso-swatch" data-mark="lit" viewBox="0 0 16 10" aria-hidden="true"><path d="M2 4.5 8 1.5 14 4.5 14 6 8 9 2 6Z"/><path class="iso-swatch-crease" d="M2 4.5 8 7.5 14 4.5"/></svg>Each dot is 10 GB a second through the pipe, at the rate the model gives</span><span class="iso-key"><svg class="iso-swatch" data-mark="red" viewBox="0 0 16 10" aria-hidden="true"><path d="M1.5 5h13"/></svg>The limit: the part that sets the speed</span></span></figcaption></figure><p class="bp-say" data-say aria-live="polite"></p><div class="bp-chips" aria-label="Live numbers"><span class="bp-chip"><span class="bp-chip-name">pipe</span><span class="bp-chip-value" data-chip="bw">-</span></span><span class="bp-chip"><span class="bp-chip-name">bytes per element</span><span class="bp-chip-value" data-chip="bytes">-</span></span><span class="bp-chip"><span class="bp-chip-name">memory allows</span><span class="bp-chip-value" data-chip="memory">-</span></span><span class="bp-chip"><span class="bp-chip-name">lanes could do</span><span class="bp-chip-value" data-chip="lanes">-</span></span><span class="bp-chip"><span class="bp-chip-name">runs at</span><span class="bp-chip-value" data-chip="rate">-</span></span><span class="bp-chip"><span class="bp-chip-name">lanes busy</span><span class="bp-chip-value" data-chip="busy">-</span></span><span class="bp-chip"><span class="bp-chip-name">operations per byte</span><span class="bp-chip-value" data-chip="perbyte">-</span></span><span class="bp-chip"><span class="bp-chip-name">balance point</span><span class="bp-chip-value" data-chip="balance">-</span></span><span class="bp-chip"><span class="bp-chip-name">compute-bound from</span><span class="bp-chip-value" data-chip="turn">-</span></span><span class="bp-chip"><span class="bp-chip-name">the limit</span><span class="bp-chip-value" data-chip="limit">-</span></span></div><p class="bp-idea"><b>The big idea:</b> each byte has to carry enough math, or memory sets the speed.</p><ul class="bp-facts"><li><b>500 GB/s and 20 trillion operations a second are the course's example chip, not one real product.</b> So are the bigger card's 1,000 GB/s and 30 trillion.</li><li><b>The board rounds 41.7 billion to 42.</b> This page shows 41.7, because the model gives 500 ÷ 12 = 41.67.</li></ul><details class="bp-notes"><summary>Where the numbers come from</summary><ul>
+<li><b>The model:</b> one pure function, written and tested before drawing: elements a second = the smaller of bandwidth ÷ bytes per element and operations a second ÷ operations per element. Every number, bar, dot, marker and label on the board comes from it.</li>
+<li><b>Real: 384 wires × 21 gigabits.</b> That is the published memory of the GeForce RTX 4090, a 384-bit bus of GDDR6X at 21 Gbps. 384 × 21 ÷ 8 = 1,008 GB/s, which rounds to about 1,000. Spec sheets also list it as 1,008 or about 1,010.</li>
+<li><b>Not checked: 30 trillion operations a second.</b> It comes from your brief. A real card's figure depends on what counts as an operation, and this page does not claim it matches the RTX 4090.</li>
+<li><b>Busy</b> means the share of the lanes' capacity in use, not power or a utilisation meter. A tool such as nvidia-smi reports something different: a GPU can show 100% while its lanes wait on memory like this.</li>
+<li><b>What the model leaves out:</b> every byte here crosses the pipe, once. Real caches let a kernel that reuses data do much more math per byte than this suggests, and a bus loses time to refresh and to switching between reads and writes, so 500 GB/s is a peak rather than a sustained rate.</li>
+<li><b>One operation is one lane doing one thing for one clock.</b> Real kernels mix cheap and expensive operations.</li>
+<li><b>New kernel</b> operation counts are round figures chosen for the figure, not measurements. The Mandelbrot kernel reads nothing and takes 8 operations for each of about 100 steps. The n-body kernel takes 20 for each of 1,000 neighbours and assumes no caching.</li>
+<li><b>The pipe's two directions</b> are drawn as two lanes for clarity. Real memory shares its wires between reads and writes, which is why the model adds them together. The dots run at 1 for each 10 GB a second: their spacing is true, and the speed along the pipe means nothing.</li>
+</ul></details><p class="bp-sources">Sources for the 384 × 21 figure: <a href="https://techpowerup.com/review/nvidia-geforce-rtx-4090-founders-edition">TechPowerUp RTX 4090 review</a>, <a href="https://www.notebookcheck.net/NVIDIA-GeForce-RTX-4090-GPU-Benchmarks-and-Specs.674574.0.html">Notebookcheck RTX 4090 specs</a>.</p></div></div></main><script type="module">// How fast a kernel runs: the slower of what memory can feed and what the lanes can do. Pure, no DOM.
+// elements per second = min(bandwidth / bytes per element, operations per second / operations per element)
+const G = 1e9, T = 1e12;
+const CARDS = {
+  course: { name: "the course chip", bandwidth: 500 * G, ops: 20 * T },
+  bigger: { name: "the bigger card", bandwidth: 1000 * G, ops: 30 * T },
+};
+const WORD = 4; // bytes in one 32-bit number
+const KERNELS = {
+  add: { name: "c = a + b", read: 8, write: 4, ops: 1 },
+  big: { name: "4 bytes in, 200 operations, 4 bytes out", read: 4, write: 4, ops: 200 },
+};
+// "New kernel" draws these in turn. Operation counts are round figures chosen for the figure.
+const NEW_KERNELS = [
+  { name: "scale: y = k × x", read: 4, write: 4, ops: 1 },
+  { name: "dot product", read: 8, write: 0, ops: 2 },
+  { name: "Mandelbrot pixel, about 100 steps", read: 0, write: 4, ops: 800 },
+  { name: "5-point stencil, nothing cached", read: 20, write: 4, ops: 6 },
+  { name: "n-body, 1,000 neighbours", read: 32, write: 16, ops: 20000 },
+];
+function run(card, kernel) {
+  const bytes = kernel.read + kernel.write;
+  const memory = card.bandwidth / bytes;
+  const lanes = card.ops / kernel.ops;
+  const rate = Math.min(memory, lanes);
+  return {
+    bytes, memory, lanes, rate,
+    limit: memory < lanes ? "pipe" : memory > lanes ? "lanes" : "both",
+    busy: (rate * kernel.ops) / card.ops,
+    pipeUse: (rate * bytes) / card.bandwidth,
+    perByte: kernel.ops / bytes,
+    balance: card.ops / card.bandwidth,
+    turnsAt: (card.ops / card.bandwidth) * bytes,
+    gap: lanes / memory,
+  };
+}
+const numbersPerSecond = (card) => card.bandwidth / WORD;
+const WIRES = { count: 384, gigabits: 21 };
+const wireBandwidth = ({ count, gigabits }) => (count * gigabits * G) / 8;
+
+const STEPS = ["Open the pipe", "Count it in numbers", "Run c = a + b", "Compare with the lanes", "Find the balance point", "Add math per element", "Swap in a bigger card", "New kernel"];
+
+const GEO = {"PIPE":{"x0":410,"x1":716,"y":100,"h":56},"LANES":{"x":716,"y":44,"w":262,"h":180,"gx":730,"gy":96,"cell":4.68,"cols":50,"rows":20},"BARS":{"x0":444,"x1":970,"y":310,"h":26,"gap":36,"lo":8,"hi":14},"LINE":{"x0":310,"x1":966,"y":562,"lo":-2,"hi":4}};
+const stageBox = document.querySelector(".bp-stage-box");
+const svg = stageBox.querySelector("svg");
+const q = (s) => svg.querySelector(s);
+const still = matchMedia("(prefers-reduced-motion: reduce)");
+const readout = document.querySelector("[data-readout]");
+const sayEl = document.querySelector("[data-say]");
+const status = document.querySelector("[data-status]");
+const buttons = [...document.querySelectorAll(".bp-step")];
+const chips = Object.fromEntries([...document.querySelectorAll("[data-chip]")].map((el) => [el.dataset.chip, el]));
+const slider = document.querySelector("[data-slider]"), sliderBox = document.querySelector("[data-sliderbox]"), slideOut = document.querySelector("[data-slideout]");
+const stages = [...svg.querySelectorAll("[data-from]")];
+const nums = [...svg.querySelectorAll("[data-arr]")];
+const dotsR = q('[data-dots="r"]'), dotsW = q('[data-dots="w"]');
+const tags = { pipe: q('[data-tag="pipe"]'), lanes: q('[data-tag="lanes"]') };
+const bars = { memory: q('[data-bar="memory"]'), lanes: q('[data-bar="lanes"]') };
+const vals = { memory: q('[data-val="memory"]'), lanes: q('[data-val="lanes"]') };
+const zones = { m: q(`[data-zone="m"]`), l: q(`[data-zone="l"]`) };
+const zoneText = { m: q('[data-zt="m"]'), l: q('[data-zt="l"]') };
+
+const B = GEO.BARS, L = GEO.LINE, F = GEO.LANES, Pp = GEO.PIPE;
+const logX = (s, v) => s.x0 + ((Math.log10(Math.max(v, 10 ** s.lo)) - s.lo) / (s.hi - s.lo)) * (s.x1 - s.x0);
+const text = (el, v) => { if (el && el.textContent !== v) el.textContent = v; };
+const flag = (el, n, on) => { if (on) { if (!el.hasAttribute(n)) el.setAttribute(n, ""); } else if (el.hasAttribute(n)) el.removeAttribute(n); };
+const show = (el, on) => { const d = on ? "" : "none"; if (el.style.display !== d) el.style.display = d; };
+const ease = (x) => { const c = Math.min(1, Math.max(0, x)); return c * c * (3 - 2 * c); };
+const follow = (v, g, dt, s) => (still.matches ? g : v + (g - v) * (1 - Math.exp(-dt / s)));
+// 41.7 billion, 125 billion, 20 trillion, 42 thousand: three figures, no false precision
+function per(n) {
+  const u = n >= T ? [T, " trillion"] : n >= G ? [G, " billion"] : [1e6, " million"];
+  const v = n / u[0];
+  return (v >= 100 ? v.toFixed(0) : Number(v.toFixed(1)).toString()) + u[1];
+}
+const short = (n) => per(n).replace(" trillion", "T").replace(" billion", "B").replace(" million", "M");
+const gb = (n) => (n / G).toLocaleString("en-US") + " GB/s";
+// never let rounding reach 0% or 100% unless it is exact: 99.79% must not read as 100%
+const pctOf = (x) => { const p = x * 100; return Math.abs(p - 100) < 1e-9 ? "100%" : p < 1e-9 ? "0%" : p >= 99 || p < 10 ? p.toFixed(2) + "%" : p.toFixed(0) + "%"; };
+const perByteText = (x) => (x >= 10 ? x.toFixed(x % 1 ? 1 : 0) : x >= 1 ? Number(x.toFixed(1)).toString() : Number(x.toPrecision(x < 0.1 ? 2 : 3)).toString());
+
+// ---------- state ----------
+const s = { stage: -1, next: 0, card: CARDS.course, kernel: null, ops: 1, draw: 0, say: "Press <b>Open the pipe</b>. Everything a kernel works on has to come through it.", counted: false, shownMem: 8, shownLan: 8, shownMark: -2, shownBal: 1, shownFill: 0, shownBw: 0, playing: false, phase: null };
+let frame = 0, last = 0, visible = false;
+const flows = { r: { list: [], carry: 0 }, w: { list: [], carry: 0 } };
+const say = (html) => { s.say = html; status.textContent = html.replace(/<[^>]+>/g, ""); };
+
+const kernelNow = () => (s.kernel ? { ...s.kernel, ops: s.ops } : null);
+const result = () => { const k = kernelNow(); return k ? run(s.card, k) : null; };
+const fromSlider = (v) => Math.round(10 ** ((v / 1000) * Math.log10(30000)));
+const toSlider = (ops) => Math.round((Math.log10(ops) / Math.log10(30000)) * 1000);
+
+// ---------- what each stage means for the pipe ----------
+function traffic() {
+  if (s.stage < 0) return { r: 0, w: 0 };
+  const k = kernelNow();
+  if (!k) return { r: s.card.bandwidth, w: 0 };
+  const R = run(s.card, k);
+  return { r: R.rate * k.read, w: R.rate * k.write };
+}
+const DOT = 10 * G, SPEED = 300; // one dot for each 10 GB/s; units a second along the pipe
+function moveDots(dt) {
+  const t = traffic();
+  const span = Pp.x1 - Pp.x0 - 12, y = { r: Pp.y + Pp.h / 4 + 2, w: Pp.y + (3 * Pp.h) / 4 - 2 };
+  for (const key of ["r", "w"]) {
+    const f = flows[key], rate = t[key] / DOT;
+    if (still.matches) { f.list = Array.from({ length: Math.round((rate * span) / SPEED) }, (_, i) => ((i + 0.5) / ((rate * span) / SPEED)) * span); }
+    else {
+      f.carry += rate * dt;
+      while (f.carry >= 1) { f.carry -= 1; f.list.push((f.carry / rate) * SPEED); }
+      f.list = f.list.map((d) => d + SPEED * dt).filter((d) => d < span);
+    }
+    const d = f.list.map((p) => { const x = key === "r" ? Pp.x0 + 6 + p : Pp.x1 - 6 - p; return `M${(x - 1.6).toFixed(1)} ${y[key]}a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0-3.2 0Z`; }).join("");
+    (key === "r" ? dotsR : dotsW).setAttribute("d", d);
+  }
+  return s.stage >= 0;
+}
+
+// ---------- drawing ----------
+function draw(dt) {
+  const k = kernelNow(), R = result();
+  flag(svg, "data-open", s.stage >= 0);
+  stages.forEach((el) => flag(el, "data-seen", s.stage >= Number(el.dataset.from)));
+  const showNums = s.stage >= 2 && s.kernel && s.kernel.name === KERNELS.add.name;
+  nums.forEach((el) => { const n = el.dataset.arr; el.setAttribute("data-on", showNums ? (n === "c" ? "w" : "r") : s.stage >= 0 && n !== "c" ? "r" : ""); });
+
+  // pipe
+  s.shownBw = follow(s.shownBw, s.stage >= 0 ? s.card.bandwidth : 0, dt, 0.15);
+  if (Math.abs(s.shownBw - s.card.bandwidth) < 0.02 * s.card.bandwidth) s.shownBw = s.card.bandwidth;
+  text(q("[data-bw]"), s.stage >= 0 ? Math.round(s.shownBw / G).toLocaleString("en-US") + " GB/s" : "pipe closed");
+  const number = numbersPerSecond(s.card);
+  text(q("[data-under]"), R ? `${per(R.rate)} elements a second` : s.stage >= 1 ? `${per(number)} 32-bit numbers a second` : "");
+  text(q("[data-under2]"), R ? `${R.bytes} bytes each · pipe ${pctOf(R.pipeUse)} full` : s.stage >= 1 ? `${s.card.bandwidth / G} ÷ 4 = ${number / G}` : "");
+  text(q("[data-ops]"), s.stage >= 3 ? per(s.card.ops) + " ops/s" : "");
+  text(q("[data-busy]"), s.stage >= 3 && R ? pctOf(R.busy) + " busy" : "");
+  text(q("[data-idle]"), s.stage >= 3 && R ? pctOf(1 - R.busy) + " idle" : "");
+  // lanes, as an exact filled fraction of the 1,000-cell grid
+  const goal = s.stage >= 3 && R ? R.busy : 0;
+  s.shownFill = follow(s.shownFill, goal, dt, 0.25);
+  if (Math.abs(s.shownFill - goal) < 1e-5) s.shownFill = goal;
+  const cells = s.shownFill * F.cols * F.rows, whole = Math.floor(cells / F.cols);
+  const fill = q("[data-fill]");
+  // whole rows from the bottom, then the part of a row that remains
+  const part = (cells - whole * F.cols) * F.cell;
+  fill.setAttribute("d", "");
+  fill.setAttribute("x", F.gx); fill.setAttribute("width", (F.cols * F.cell).toFixed(2));
+  fill.setAttribute("y", (F.gy + (F.rows - whole) * F.cell).toFixed(2)); fill.setAttribute("height", (whole * F.cell).toFixed(2));
+  let extra = q("[data-fill2]");
+  if (!extra) { extra = fill.cloneNode(); extra.removeAttribute("data-fill"); extra.setAttribute("data-fill2", ""); fill.after(extra); }
+  extra.setAttribute("x", F.gx); extra.setAttribute("width", part.toFixed(2)); extra.setAttribute("y", (F.gy + (F.rows - whole - 1) * F.cell).toFixed(2)); extra.setAttribute("height", whole >= F.rows ? 0 : F.cell);
+
+  const limit = s.stage >= 2 && R ? R.limit : null;
+  const labelled = s.stage >= 4 ? limit : s.stage >= 2 ? "pipe" : null; // until the lanes are on the board, only the pipe is known
+  show(tags.pipe, labelled === "pipe" || labelled === "both");
+  show(tags.lanes, labelled === "lanes" || labelled === "both");
+
+  // bars
+  if (R) {
+    s.shownMem = follow(s.shownMem, Math.log10(R.memory), dt, 0.2);
+    s.shownLan = follow(s.shownLan, Math.log10(R.lanes), dt, 0.2);
+    const set = (name, logv, value) => {
+      const x = logX(B, 10 ** logv);
+      bars[name].setAttribute("width", Math.max(0, x - B.x0).toFixed(1));
+      const inside = x > B.x1 - 120;
+      vals[name].setAttribute("x", (inside ? x - 8 : x + 8).toFixed(1));
+      vals[name].setAttribute("text-anchor", inside ? "end" : "start");
+      vals[name].style.fill = inside ? "var(--anatomy-card)" : "";
+      text(vals[name], per(value));
+    };
+    set("memory", s.shownMem, R.memory); set("lanes", s.shownLan, R.lanes);
+    flag(bars.memory, "data-limit", R.limit !== "lanes"); flag(bars.lanes, "data-limit", R.limit !== "pipe");
+    const x = logX(B, Math.min(10 ** s.shownMem, 10 ** s.shownLan));
+    q("[data-run]").setAttribute("d", `M${x.toFixed(1)} ${B.y - 8}V${B.y + B.h + B.gap + 4}`);
+    const lab = q("[data-runlabel]"); lab.setAttribute("x", Math.min(x, B.x1 - 70).toFixed(1)); text(lab, "runs at " + per(R.rate));
+  }
+  // number line
+  const bal = s.card.ops / s.card.bandwidth;
+  s.shownBal = follow(s.shownBal, Math.log10(bal), dt, 0.25);
+  const bx = logX(L, 10 ** s.shownBal);
+  q("[data-balance]").setAttribute("transform", `translate(${bx.toFixed(1)} 0)`);
+  text(q("[data-baltext]"), `balance: ${per(s.card.ops)} ÷ ${(s.card.bandwidth / G).toLocaleString("en-US")} billion = ${bal} per byte`);
+  q("[data-baltext]").setAttribute("text-anchor", bx > 700 ? "end" : "middle");
+  zones.m.setAttribute("width", (bx - L.x0).toFixed(1));
+  zones.l.setAttribute("x", bx.toFixed(1)); zones.l.setAttribute("width", (L.x1 - bx).toFixed(1));
+  zoneText.m.setAttribute("x", ((L.x0 + bx) / 2).toFixed(1)); zoneText.l.setAttribute("x", ((L.x1 + bx) / 2).toFixed(1));
+  flag(zones.m, "data-on", !!R && s.stage >= 4 && R.limit !== "lanes"); flag(zones.l, "data-on", !!R && s.stage >= 4 && R.limit !== "pipe");
+  show(q("[data-marker]"), !!R);
+  if (R) {
+    s.shownMark = follow(s.shownMark, Math.log10(R.perByte), dt, 0.18);
+    const mx = logX(L, 10 ** s.shownMark);
+    q("[data-marker]").setAttribute("transform", `translate(${mx.toFixed(1)} 0)`);
+    const label = q("[data-marktext]");
+    label.setAttribute("x", Math.max(L.x0 + 170, Math.min(mx, L.x1 - 170)).toFixed(1));
+    text(label, `${k.name === KERNELS.add.name && k.ops === 1 ? "c = a + b" : "this kernel"}: ${k.ops.toLocaleString("en-US")} ÷ ${R.bytes} = ${perByteText(R.perByte)} per byte`);
+  }
+  text(q("[data-wire]"), `${(wireBandwidth(WIRES) / G).toLocaleString("en-US")} GB/s`);
+
+  // chips and the readout, one model
+  text(chips.bw, s.stage >= 0 ? gb(s.card.bandwidth) : "-");
+  text(chips.bytes, R ? String(R.bytes) : "-");
+  text(chips.memory, R ? per(R.memory) + "/s" : s.stage >= 1 ? per(number) + " numbers/s" : "-");
+  text(chips.lanes, R && s.stage >= 3 ? per(R.lanes) + "/s" : "-");
+  text(chips.rate, R ? per(R.rate) + "/s" : "-");
+  text(chips.busy, R && s.stage >= 3 ? pctOf(R.busy) : "-");
+  text(chips.perbyte, R && s.stage >= 4 ? perByteText(R.perByte) : "-");
+  text(chips.balance, s.stage >= 4 ? String(bal) : "-");
+  text(chips.turn, R && s.stage >= 5 ? R.turnsAt.toLocaleString("en-US") + " ops per element" : "-");
+  text(chips.limit, limit && s.stage >= 4 ? { pipe: "the pipe", lanes: "the lanes", both: "both, in balance" }[limit] : "-");
+  text(readout, !R ? (s.stage >= 0 ? gb(s.card.bandwidth) : "pipe closed") : `${per(R.rate)} elements/s · ${s.stage >= 3 ? pctOf(R.busy) + " busy" : R.bytes + " bytes each"}`);
+  text(slideOut, s.ops.toLocaleString("en-US"));
+  if (sayEl.innerHTML !== s.say) sayEl.innerHTML = s.say;
+  buttons.forEach((button, i) => {
+    const st = i === s.next ? "next" : i < s.next ? "done" : "later";
+    if (button.dataset.state !== st) button.dataset.state = st;
+    const on = i === s.next && !s.playing;
+    if (button.disabled === on) button.disabled = !on;
+  });
+}
+
+// ---------- the steps ----------
+function setOps(ops) { s.ops = ops; slider.value = toSlider(ops); }
+function closing() {
+  const R = result(), k = kernelNow();
+  const side = R.limit === "pipe" ? `left of the balance point, so <span class="bp-r">the pipe is the limit</span>` : R.limit === "lanes" ? `right of the balance point, so <span class="bp-r">the lanes are the limit</span>` : `exactly on the balance point, so <span class="bp-r">pipe and lanes run out together</span>`;
+  return `<b>${k.name}</b>: ${perByteText(R.perByte)} operations per byte, ${side}. It runs at <b>${per(R.rate)} elements a second</b> with the lanes ${pctOf(R.busy)} busy.`;
+}
+function sweep() {
+  // the marker walks to twice the turning point and back, so both sides are seen
+  const stops = [[0, 1], [1.8, 960], [2.6, 960], [3.4, 480]];
+  s.playing = true; s.phase = { t: 0, stops };
+  say("Add math per element. The bytes stay at 12, so the marker moves right.");
+}
+function press(index) {
+  if (index !== s.next || s.playing) return;
+  const c = CARDS.course;
+  if (index === 0) { s.stage = 0; say(`The pipe from VRAM to the chip carries <b>${gb(c.bandwidth)}</b>. Each dot is 10 GB a second.`); }
+  if (index === 1) { s.stage = 1; say(`Each 32-bit number is 4 bytes, so 500 ÷ 4 = <b>${per(numbersPerSecond(c))} numbers a second</b>. That is the pipe's whole width in numbers.`); }
+  if (index === 2) { s.stage = 2; s.kernel = KERNELS.add; s.ops = 1; const R = result(); say(`<b>c = a + b</b> reads 2 numbers and writes 1: <b>${R.bytes} bytes per element</b>, so at most 500 ÷ 12 = <b>${per(R.memory)} elements a second</b>.`); }
+  if (index === 3) { s.stage = 3; const R = result(); say(`The lanes could do ${per(c.ops)} additions a second and get ${per(R.rate)}. They are busy <b>${pctOf(R.busy)}</b> of the time and <span class="bp-r">idle over 99%</span>.`); }
+  if (index === 4) { s.stage = 4; const R = result(); say(`Balance point: ${per(c.ops)} ÷ 500 billion = <b>${R.balance} operations per byte</b>. c = a + b does 1 ÷ 12 = <b>${perByteText(R.perByte)}</b>, far to the left, so <span class="bp-r">the pipe is the limit</span>.`); }
+  if (index === 5) { s.stage = 5; sliderBox.removeAttribute("data-off"); slider.disabled = false; if (still.matches) { setOps(480); finish5(); } else sweep(); }
+  if (index === 6) { s.stage = 6; s.card = CARDS.bigger; s.kernel = KERNELS.big; setOps(200); const R = result(); say(`The bigger card: ${per(s.card.ops)} operations, ${gb(s.card.bandwidth)}, balance <b>${R.balance}</b>. A kernel at ${perByteText(R.perByte)} per byte is still left of it: <span class="bp-r">memory-bound at ${per(R.rate)}</span> where the lanes alone could manage ${per(R.lanes)}, <b>${pctOf(R.busy)} busy</b>.`); }
+  if (index === 7) { const nk = NEW_KERNELS[s.draw++ % NEW_KERNELS.length]; s.kernel = nk; setOps(nk.ops); say(closing()); }
+  s.next = index >= 7 ? 7 : s.playing ? index : index + 1;
+  kick();
+}
+function finish5() {
+  const R = result();
+  s.playing = false; s.phase = null; s.next = 6;
+  say(`At 12 bytes the kernel turns compute-bound at 40 × 12 = <b>${R.turnsAt} operations per element</b>. Right there, pipe and lanes run out together, and the lanes are ${pctOf(R.busy)} busy. Try the slider.`);
+}
+function play(dt) {
+  if (!s.phase) return;
+  const p = s.phase; p.t += dt;
+  const stops = p.stops, end = stops[stops.length - 1][0];
+  let i = 0;
+  while (i < stops.length - 2 && p.t > stops[i + 1][0]) i++;
+  const [t0, a] = stops[i], [t1, b] = stops[i + 1];
+  const f = ease((p.t - t0) / (t1 - t0));
+  const ops = Math.round(10 ** (Math.log10(a) + (Math.log10(b) - Math.log10(a)) * f));
+  setOps(ops);
+  const R = result();
+  if (R.limit === "lanes" && p.t < 2.6) say(`Past 480 operations <span class="bp-r">the lanes become the limit</span>: the pipe stops filling, and the dots thin out.`);
+  if (p.t >= end) { setOps(480); finish5(); }
+}
+slider.addEventListener("input", () => {
+  if (s.playing) return;
+  let ops = fromSlider(Number(slider.value));
+  const R0 = result(); if (Math.abs(Math.log10(ops / R0.turnsAt)) < 0.012) ops = Math.round(R0.turnsAt); // settle exactly on the turning point
+  s.ops = ops; say(closing()); kick();
+});
+
+function tick(now) {
+  const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
+  last = now;
+  play(dt);
+  const live_ = moveDots(dt);
+  draw(dt);
+  frame = visible && (live_ || s.playing) && !still.matches ? requestAnimationFrame(tick) : 0;
+}
+function kick() { if (still.matches || !visible) { moveDots(1); draw(1); return; } if (!frame) { last = 0; frame = requestAnimationFrame(tick); } }
+buttons.forEach((b, i) => b.addEventListener("click", () => press(i)));
+new IntersectionObserver((e) => { visible = e[e.length - 1].isIntersecting; if (visible) kick(); }, { rootMargin: "120px 0px" }).observe(stageBox);
+draw(1);
+</script></body></html>
